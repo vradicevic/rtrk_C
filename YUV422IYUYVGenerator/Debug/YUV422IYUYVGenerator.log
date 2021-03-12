@@ -1,0 +1,12 @@
+﻿  main.c
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(19): warning C4101: 'y2': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(18): warning C4101: 'y1': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(21): warning C4101: 'v': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(36): warning C4101: 'fileToWrite4': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(16): warning C4101: 'bufferOut': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(15): warning C4101: 'bufferYUYV': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(24): warning C4101: 'frameCount': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(20): warning C4101: 'u': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(35): warning C4101: 'fileToWrite3': unreferenced local variable
+D:\Visual Studio\YUV422IYUYVGenerator\main.c(34): warning C4101: 'fileToWrite2': unreferenced local variable
+  YUV422IYUYVGenerator.vcxproj -> D:\Visual Studio\YUV422IYUYVGenerator\Debug\YUV422IYUYVGenerator.exe
