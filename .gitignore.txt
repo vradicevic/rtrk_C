@@ -8,5 +8,5 @@
 /YUV422IYUYVGenerator/YUV422IYUYVGenerator.vcxproj
 /YUV422IYUYVGenerator/YUV422IYUYVGenerator.vcxproj.filters
 /YUV422IYUYVGenerator/YUV422IYUYVGenerator.vcxproj.user
-/BMA_v1/BMA_Enviroment/Debug
-/BMA_v1/BMA_Enviroment/.vs
+/BMA_v1/BMA_Enviroment/Debug/
+/BMA_v1/BMA_Enviroment/.vs/

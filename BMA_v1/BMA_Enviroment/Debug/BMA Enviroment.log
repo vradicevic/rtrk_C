@@ -1,0 +1,31 @@
+﻿  bma_utils.c
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\bma_utils.c(5,1): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\bma_utils.c(9,1): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\bma_utils.c(71,207): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  ebma.c
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\ebma.c(61,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+  k_mean_clustering.c
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(33,27): warning C4244: '=': conversion from 'volatile uint16_t' to 'uint8_t', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(7,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(75,31): warning C4244: '=': conversion from 'volatile uint16_t' to 'uint8_t', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(48,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(106,19): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(142,18): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(143,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(175,58): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(175,59): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(183,58): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(183,59): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(189,58): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(189,59): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(195,58): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(195,59): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(213,99): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(216,74): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\k_mean_clustering.c(221,21): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  main.c
+  read_write_utils.c
+  tss.c
+C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\tss.c(67,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Generating Code...
+  BMA Enviroment.vcxproj -> C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\Debug\BMA Enviroment.exe
