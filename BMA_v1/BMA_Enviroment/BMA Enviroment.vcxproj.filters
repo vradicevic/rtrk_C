@@ -33,6 +33,9 @@
     <ClCompile Include="k_mean_clustering.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="my_bma.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bma_utils.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="read_write_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="my_bma.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

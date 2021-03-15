@@ -21,5 +21,6 @@ uint8_t* readFrameFrom444YUVVideo(char* filepath, int width, int height, int fra
 
 uint8_t* readFrameFrom422YUYVVideo(char* filepath, int width, int height, int frameNumber);
 
+void saveVectors(char* filepath, int16_t** buff, int16_t itemsNum, int wordWidth);
 
 #endif

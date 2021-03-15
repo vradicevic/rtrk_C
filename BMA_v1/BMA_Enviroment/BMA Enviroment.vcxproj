@@ -144,6 +144,7 @@
     <ClCompile Include="ebma.c" />
     <ClCompile Include="k_mean_clustering.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="my_bma.c" />
     <ClCompile Include="read_write_utils.c" />
     <ClCompile Include="tss.c" />
   </ItemGroup>
@@ -151,6 +152,7 @@
     <ClInclude Include="bma_utils.h" />
     <ClInclude Include="ebma.h" />
     <ClInclude Include="k_mean_clustering.h" />
+    <ClInclude Include="my_bma.h" />
     <ClInclude Include="read_write_utils.h" />
     <ClInclude Include="tss.h" />
   </ItemGroup>

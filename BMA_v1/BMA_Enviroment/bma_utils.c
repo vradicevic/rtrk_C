@@ -76,6 +76,21 @@ float calculateMAD(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacro
 
 }
 
+float calculateSUMDIFF(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo) {
+    float sumPrev = 0;
+    float sumCurr = 0;
+    int x, y;
+    for (y = 0; y < BLOCK_SIZE; y++) {
+        for (x = 0; x < BLOCK_SIZE; x++) {
+            sumPrev += (float)prevFrame[((y + prevMacroblockCoo.y) * WIDTH) + (x + prevMacroblockCoo.x)];
+            sumCurr += (float)currentFrame[((y + currentMacroblockCoo.y) * WIDTH) + (x + currentMacroblockCoo.x)];
+        }
+    }
+    float sumdiff = fabs(sumPrev - sumCurr)/BLOCK_ELEMENTS;
+    return sumdiff;
+
+}
+
 void getSearchArea(Point prevMacroblockCoo, int searchArea, Point pointsSA[2]) {
 
     int x = prevMacroblockCoo.x - searchArea;

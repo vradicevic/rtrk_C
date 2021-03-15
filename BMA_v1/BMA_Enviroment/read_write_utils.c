@@ -78,22 +78,16 @@ uint8_t* readFrameFrom444YUVVideo(char* filepath, int width, int height, int fra
     return yuv444;
 }
 
-uint8_t* readFrameFrom422YUYVVideo(char* filepath, int width, int height, int frameNumber) {//prvi frame ima frameNumber = 0
-    int frameSize = (width * height * 2);
-    uint8_t* yuyv = (uint8_t*)malloc(frameSize * sizeof(uint8_t));
-    FILE* file = fopen(filepath, "rb");
-    fseek(file, frameNumber * frameSize, 0);
-    fread(yuyv, 1, frameSize, file);
-    fclose(file);
-    return yuyv;
-}
+
 
 void saveVectors(char* filepath, int16_t** buff, int16_t itemsNum, int wordWidth) {//u slucaju vektora itemsNum je num of vectors, a wordWidth je ftr_num
     FILE* file = fopen(filepath, "wb");
-    fwrite(&itemsNum, sizeof(int16_t), 1, file);
+    //fwrite(&itemsNum, sizeof(int16_t), 1, file);
+    
     for (int i = 0; i < itemsNum; i++) {
         for (int j = 0; j < wordWidth; j++) {
-            fwrite(buff[j][i], sizeof(int16_t), 1, file);
+            
+            fwrite(&buff[j][i], sizeof(int16_t), 1, file);
         }
     }
     fclose(file);
