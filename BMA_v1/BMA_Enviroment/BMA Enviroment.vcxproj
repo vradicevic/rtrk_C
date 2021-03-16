@@ -147,6 +147,7 @@
     <ClCompile Include="my_bma.c" />
     <ClCompile Include="read_write_utils.c" />
     <ClCompile Include="tss.c" />
+    <ClCompile Include="yuv_convert_utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bma_utils.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="my_bma.h" />
     <ClInclude Include="read_write_utils.h" />
     <ClInclude Include="tss.h" />
+    <ClInclude Include="yuv_convert_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

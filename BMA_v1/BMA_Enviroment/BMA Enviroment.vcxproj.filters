@@ -36,6 +36,9 @@
     <ClCompile Include="my_bma.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="yuv_convert_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bma_utils.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="my_bma.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="yuv_convert_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
