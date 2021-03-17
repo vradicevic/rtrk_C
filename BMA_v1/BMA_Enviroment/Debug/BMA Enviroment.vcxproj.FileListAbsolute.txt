@@ -1,4 +1,0 @@
-C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\Debug\BMA Enviroment.exe
-C:\Users\Valentin\Documents\Visual Studio 2019\rtrk_C\BMA_v1\BMA Enviroment\Debug\BMA Enviroment.pdb
-D:\ProgramskiDokumenti\VisualStudio\rtrk_C\BMA_v1\BMA_Enviroment\Debug\BMA Enviroment.exe
-D:\ProgramskiDokumenti\VisualStudio\rtrk_C\BMA_v1\BMA_Enviroment\Debug\BMA Enviroment.pdb
