@@ -6,12 +6,12 @@
 
 
 int main(void) {
-	char* videoPath = "D:\\Videosekvence\\yuv\\testingNew.yuv";
-	char* outputYUYVPath = "D:\\Videosekvence\\yuv\\odabrani_mirna_rightYUYV.yuv";
+	char* videoPath = "D:\\Videosekvence\\yuv\\moving_dashboardYUV444.yuv";
+	char* outputYUYVPath = "D:\\Videosekvence\\yuv\\odabrani_moving_dashboardYUYV.yuv";
 	char* testYUV444 = "D:\\Videosekvence\\yuv\\tester444.yuv";
 	char* vectorsPath = "H:\\vektori\\vectors0.bin";
-	int frames[] = {51,53,55,63,65,67,75,77,83,87,91,147,151,155,165,187,189,191,195,199,207,215,223,233,239,249,261,267,325,329,335,345,355,357,361};
-	int framesNum = 35;
+	int frames[] = {39,67,69,75,79,87,93,95,135,137,149,151,153,155,183,185,187,189,191,203,209,219,301,317,321,329,345,347,351,427,429,431,437,463,689,691};
+	int framesNum = 36;
 	int ftr_num = 6;
 	
 	int maxMatches = (WIDTH / BLOCK_SIZE) * (HEIGHT / BLOCK_SIZE);
