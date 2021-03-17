@@ -12,3 +12,18 @@
 
 *.ipch
 *.obj
+*.pdb
+*.tlog
+*.txt
+*.log
+*.exe
+*.ilk
+*.user
+*.filters
+*.vcxproj
+*.sln
+*.db
+*.suo
+*.opendb
+*.json
+*.sqlite

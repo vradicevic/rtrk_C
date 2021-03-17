@@ -23,4 +23,8 @@ uint8_t* readFrameFrom422YUYVVideo(char* filepath, int width, int height, int fr
 
 void saveVectors(char* filepath, int16_t** buff, int16_t itemsNum, int wordWidth);
 
+void appendFrameToYUYVFile(char* filepath, uint8_t* yuyv, int width, int height);
+
+void appendFrameToYUV444File(char* filepath, uint8_t* yuv444, int width, int height);
+
 #endif

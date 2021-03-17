@@ -68,12 +68,13 @@ uint8_t* readFrameFrom422YUYVVideo(char* filepath, int width, int height, int fr
 
 }
 
-uint8_t* readFrameFrom444YUVVideo(char* filepath, int width, int height, int frameNumber) {//prvi frame ima frameNumber = 0
+uint8_t* readFrameFrom444YUVVideo(char* filepath, int width, int height, int frameNumber) {//prvi frame ima frameNumber = 1
     int frameSize = (width * height * 3);
+	frameNumber = frameNumber - 1;
     uint8_t* yuv444 = (uint8_t*)malloc(frameSize * sizeof(uint8_t));
     FILE* file = fopen(filepath, "rb");
-    fseek(file, frameNumber * frameSize, 0);
-    fread(yuv444, 1, frameSize, file);
+    fseek(file, frameNumber * frameSize,SEEK_SET);
+    fread(yuv444, sizeof(uint8_t), frameSize, file);
     fclose(file);
     return yuv444;
 }
@@ -92,4 +93,15 @@ void saveVectors(char* filepath, int16_t** buff, int16_t itemsNum, int wordWidth
     }
     fclose(file);
     printf("File write done\n");
+}
+
+void appendFrameToYUYVFile(char* filepath, uint8_t* yuyv, int width, int height) {
+	FILE* file = fopen(filepath, "ab");
+	fwrite(yuyv, sizeof(uint8_t), (width * height * 2), file);
+	fclose(file);
+}
+void appendFrameToYUV444File(char* filepath, uint8_t* yuv444, int width, int height) {
+	FILE* file = fopen(filepath, "ab");
+	fwrite(yuv444, sizeof(uint8_t), (width * height * 3), file);
+	fclose(file);
 }
