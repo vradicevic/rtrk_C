@@ -1,5 +1,5 @@
 #include "k_mean_clustering.h"
-
+uint8_t FTR_ANGLE = 0;
 uint8_t calculateVarianceOf(float** means, int16_t** vectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint16_t numOfVectors, uint8_t k) {
     volatile uint16_t i, j;
     float sum = 0;
@@ -152,53 +152,53 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
     float inter;
     for (i = 0; i < k; i++) {
         for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
-            //means[i][ftr_i] = getRandom(&minima[ftr_i],&maxima[ftr_i]);
+            means[i][ftr_i] = getRandom(&minima[ftr_i],&maxima[ftr_i]);
 
-            switch (i) {
-            case 0: {
+            //switch (i) {
+            //case 0: {
 
-                inter = minima[ftr_i];
-                means[i][ftr_i] = inter;
-                break;
+            //    inter = minima[ftr_i];
+            //    means[i][ftr_i] = inter;
+            //    break;
 
 
-            }
-            case 1: {
+            //}
+            //case 1: {
 
-                inter = maxima[ftr_i];
-                means[i][ftr_i] = inter;
-                break;
+            //    inter = maxima[ftr_i];
+            //    means[i][ftr_i] = inter;
+            //    break;
 
-            }
-            case 2: {
+            //}
+            //case 2: {
 
-                inter = abs(maxima[ftr_i] - minima[ftr_i]);
-                inter = minima[ftr_i] + inter;
-                means[i][ftr_i] = inter;
-                break;
+            //    inter = abs(maxima[ftr_i] - minima[ftr_i]);
+            //    inter = minima[ftr_i] + inter;
+            //    means[i][ftr_i] = inter;
+            //    break;
 
-            }
-            case 3: {
+            //}
+            //case 3: {
 
-                inter = abs(maxima[ftr_i] - minima[ftr_i]);
-                means[i][ftr_i] = minima[ftr_i] + (inter / 2);
-                break;
+            //    inter = abs(maxima[ftr_i] - minima[ftr_i]);
+            //    means[i][ftr_i] = minima[ftr_i] + (inter / 2);
+            //    break;
 
-            }
-            case 4: {
-                inter = abs(maxima[ftr_i] - minima[ftr_i]);
-                means[i][ftr_i] = maxima[ftr_i] - (inter / 2);
-                break;
+            //}
+            //case 4: {
+            //    inter = abs(maxima[ftr_i] - minima[ftr_i]);
+            //    means[i][ftr_i] = maxima[ftr_i] - (inter / 2);
+            //    break;
 
-            }
-            case 5: {
-                inter = abs(maxima[ftr_i] - minima[ftr_i]);
-                means[i][ftr_i] = inter;
-                break;
+            //}
+            //case 5: {
+            //    inter = abs(maxima[ftr_i] - minima[ftr_i]);
+            //    means[i][ftr_i] = inter;
+            //    break;
 
-            }
+            //}
 
-            }
+            //}
 
         }
     }

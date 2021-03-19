@@ -27,4 +27,6 @@ void appendFrameToYUYVFile(char* filepath, uint8_t* yuyv, int width, int height)
 
 void appendFrameToYUV444File(char* filepath, uint8_t* yuv444, int width, int height);
 
+void saveYUYVImage(char* imagePath, uint8_t image, int width, int height);
+
 #endif

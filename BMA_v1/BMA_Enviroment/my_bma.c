@@ -1,10 +1,14 @@
 #include "my_bma.h"
 
+
+
+
 int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFrame, int step) {
     Point prevMacroblockCoo;
     int deviation, x, y;
     Point privFrom, privTo;
     int index = 0;
+    
 
 
     for (y = 0; y < HEIGHT - (HEIGHT % BLOCK_SIZE); y += BLOCK_SIZE) {
@@ -28,7 +32,6 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
 
             }
             else {
-
                 privTo = prevMacroblockCoo;
             }
 
@@ -63,15 +66,19 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
     /////blockSize*blockSize
     //////postavljanje na sredinu makrobloka
     points[0] = getCenter(prevMacroblockCoo);
-
+    int idBest=0;
 
     float minMad = 99999.999;
     float MAD;
     best = points[0];
     int i;
+    
+    int flag = 1;
+    int skips[] = { 0,0,0,0,0,0,0,0,0 };
 
+    
+    //printf("Here i am");
     while (step >= 1) {
-
         points[1].x = points[0].x;              //up
         points[1].y = points[0].y - step;
         points[2].x = points[0].x;              //down
@@ -88,28 +95,140 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
         points[7].y = points[0].y + step;
         points[8].x = points[0].x + step;       //lowerRight
         points[8].y = points[0].y + step;
+
+        idBest = 0;
         for (i = 0; i < 9; i++) {
-            currentMacroblockCoo = getUpperLeft(points[i]);
+            if (!skips[i]) {
+                currentMacroblockCoo = getUpperLeft(points[i]);
 
-            MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
+                MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
 
-            if (MAD < minMad) {
-                //printf("Iteration:%d \tMAD: %f\n", iteration, MAD);
-                minMad = MAD;
-                best = points[i];
+                if (MAD < minMad) {
+                    //printf("Iteration:%d \tMAD: %f\n", iteration, MAD);
+                    minMad = MAD;
+                    best = points[i];
+                    idBest = i;
 
+                }
             }
+           
 
         }
         //printf("Iteration:%d \tMAD: %f\n", iteration, minMad);
-
+        
         points[0] = best;
+        skips[0] = 1;
+        if (idBest == 0) {
+            skips[1] = 0;
+            skips[2] = 0;
+            skips[3] = 0;
+            skips[4] = 0;
+            skips[5] = 0;
+            skips[6] = 0;
+            skips[7] = 0;
+            skips[8] = 0;
+           
+        }
+        else if (idBest == 1) {
+            skips[1] = 0;
+            skips[2] = 1;
+            skips[3] = 1;
+            skips[4] = 1;
+            skips[5] = 0;
+            skips[6] = 0;
+            skips[7] = 1;
+            skips[8] = 1;
+            
+            
+        }
+        else if (idBest == 2) {
+            skips[1] = 1;
+            skips[2] = 0;
+            skips[3] = 1;
+            skips[4] = 1;
+            skips[5] = 1;
+            skips[6] = 1;
+            skips[7] = 0;
+            skips[8] = 0;
+          
+            
+        }
+        else if (idBest == 3) {
+            skips[1] = 1;
+            skips[2] = 1;
+            skips[3] = 0;
+            skips[4] = 1;
+            skips[5] = 0;
+            skips[6] = 1;
+            skips[7] = 0;
+            skips[8] = 1;
+           
+           
+        }
+        else if (idBest == 4) {
+            skips[1] = 1;
+            skips[2] = 1;
+            skips[3] = 1;
+            skips[4] = 0;
+            skips[5] = 1;
+            skips[6] = 0;
+            skips[7] = 1;
+            skips[8] = 0;
+            
+        }
+        else if (idBest == 5) {
+            skips[1] = 0;
+            skips[2] = 1;
+            skips[3] = 0;
+            skips[4] = 1;
+            skips[5] = 0;
+            skips[6] = 0;
+            skips[7] = 0;
+            skips[8] = 1;
+            
+        }
+        else if (idBest == 6) {
+            skips[1] = 0;
+            skips[2] = 1;
+            skips[3] = 1;
+            skips[4] = 0;
+            skips[5] = 0;
+            skips[6] = 0;
+            skips[7] = 1;
+            skips[8] = 0;
+            
+        }
+        else if (idBest == 7) {
+            skips[1] = 1;
+            skips[2] = 0;
+            skips[3] = 0;
+            skips[4] = 1;
+            skips[5] = 0;
+            skips[6] = 1;
+            skips[7] = 0;
+            skips[8] = 0;
+           
+        }
+        else if (idBest == 8) {
+            skips[1] = 1;
+            skips[2] = 0;
+            skips[3] = 1;
+            skips[4] = 0;
+            skips[5] = 1;
+            skips[6] = 0;
+            skips[7] = 0;
+            skips[8] = 0;
+            
+        }
+        step = step / 2;
+
+        
         /*if (minMad > 1.0 && (best.x != lastBest.x && best.y != lastBest.y)) {
             step = step;
             iteration++;
         }
         else { step = step / 2; iteration = 0; }*/
-        step = step / 2;
+        
 
 
     }
@@ -117,7 +236,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
     //printf("MinMAD: %f\n", minMad);
     ///////// vracanje na gornji lijevi ugao makrobloka
     best = getUpperLeft(best);
-    if (minMad > 3.00) {
+    if (minMad > 3.0) {
         best = prevMacroblockCoo;
     }
     return best;

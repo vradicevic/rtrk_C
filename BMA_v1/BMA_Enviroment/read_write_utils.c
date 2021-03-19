@@ -105,3 +105,9 @@ void appendFrameToYUV444File(char* filepath, uint8_t* yuv444, int width, int hei
 	fwrite(yuv444, sizeof(uint8_t), (width * height * 3), file);
 	fclose(file);
 }
+
+void saveYUYVImage(char* imagePath, uint8_t image, int width, int height) {
+    FILE* file = fopen(imagePath, "wb");
+    fwrite(image, sizeof(uint8_t), (width * height * 2), file);
+    fclose(file);
+}

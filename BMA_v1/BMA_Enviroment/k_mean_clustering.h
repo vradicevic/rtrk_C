@@ -5,7 +5,7 @@
 #include <time.h>
 #include "bma_utils.h"
 
-uint8_t FTR_ANGLE = 0;
+
 
 uint8_t calculateVarianceOf(float** means, int16_t** vectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint16_t numOfVectors, uint8_t k);
 uint8_t calculateNexBestVariance(float** means, int16_t** vectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint16_t numOfVectors, uint8_t k, uint8_t toIgnore);

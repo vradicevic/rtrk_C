@@ -13,6 +13,7 @@ int calculateAngle2Points(Point to, Point from) {
 
 int blockValueDeviation(uint8_t* frame, Point upperLeftMacroblockCoo) {
     int sum = 0;
+    
     int y, x;
     for (y = 0; y < BLOCK_SIZE; y++) {
         for (x = 0; x < BLOCK_SIZE; x++) {
@@ -21,6 +22,7 @@ int blockValueDeviation(uint8_t* frame, Point upperLeftMacroblockCoo) {
         }
     }
     int mean = sum / (BLOCK_SIZE * BLOCK_SIZE);
+    
     sum = 0;
     for (y = 0; y < BLOCK_SIZE; y++) {
         for (x = 0; x < BLOCK_SIZE; x++) {
