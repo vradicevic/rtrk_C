@@ -27,14 +27,23 @@ int calculateLength2Points(Point from, Point to);
 int calculateAngle2Points(Point to, Point from);
 
 float calculateMAD(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo);
+
+float getBiplanarDiff(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo,int median);
+
 float calculateSUMDIFF(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo);
 
 int blockValueDeviation(uint8_t* frame, Point upperLeftMacroblockCoo);
+
+int getMedianOfBlock(uint8_t* frame, Point upperLeftMacroblockCoo);
 
 Point getCenter(Point upperLeft);
 
 Point getUpperLeft(Point center);
 
 void getSearchArea(Point prevMacroblockCoo, int searchArea, Point pointsSA[2]);
+
+void swap(int* p, int* q);
+
+void sort(int a[], int n);
 
 #endif

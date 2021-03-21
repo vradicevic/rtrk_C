@@ -19,7 +19,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
             prevMacroblockCoo = getUpperLeft(prevMacroblockCoo);
             privFrom = prevMacroblockCoo;
 
-
+            int median = getMedianOfBlock(currentFrame, prevMacroblockCoo);
             deviation = blockValueDeviation(currentFrame, prevMacroblockCoo);
 
             if (((float)deviation) / (BLOCK_SIZE * BLOCK_SIZE) > 5.0) {
@@ -27,7 +27,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
                 //float varin = ((float)deviation)/(BLOCK_SIZE*BLOCK_SIZE);
                 //Vps_printf("Variance deviation %f", varin);
 
-                privTo = getBestMatchMYBMA(prevMacroblockCoo, currentFrame, prevFrame, step);
+                privTo = getBestMatchMYBMA(prevMacroblockCoo, currentFrame, prevFrame, step, median);
 
 
             }
@@ -58,10 +58,11 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
 
 }
 
-Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int step) {
+Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int stepOrig,int median) {
     Point best;
     Point points[9];
     Point currentMacroblockCoo;
+    int step = stepOrig;
 
     /////blockSize*blockSize
     //////postavljanje na sredinu makrobloka
@@ -101,8 +102,8 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
             if (!skips[i]) {
                 currentMacroblockCoo = getUpperLeft(points[i]);
 
-                MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
-
+                MAD =calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
+                
                 if (MAD < minMad) {
                     //printf("Iteration:%d \tMAD: %f\n", iteration, MAD);
                     minMad = MAD;
@@ -119,6 +120,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
         points[0] = best;
         skips[0] = 1;
         if (idBest == 0) {
+            //skips[0] = 0;
             skips[1] = 0;
             skips[2] = 0;
             skips[3] = 0;
@@ -127,6 +129,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
             skips[6] = 0;
             skips[7] = 0;
             skips[8] = 0;
+            step = step / 2;
            
         }
         else if (idBest == 1) {
@@ -150,6 +153,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
             skips[6] = 1;
             skips[7] = 0;
             skips[8] = 0;
+            
           
             
         }
@@ -220,8 +224,10 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
             skips[8] = 0;
             
         }
-        step = step / 2;
-
+        
+        if (idBest > 0) {
+            step = stepOrig;
+        }
         
         /*if (minMad > 1.0 && (best.x != lastBest.x && best.y != lastBest.y)) {
             step = step;
@@ -235,8 +241,9 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
 
     //printf("MinMAD: %f\n", minMad);
     ///////// vracanje na gornji lijevi ugao makrobloka
+    printf("\nWinners %f ", minMad);
     best = getUpperLeft(best);
-    if (minMad > 3.0) {
+    if (minMad >3.0) {
         best = prevMacroblockCoo;
     }
     return best;

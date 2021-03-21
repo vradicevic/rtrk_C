@@ -32,6 +32,24 @@ int blockValueDeviation(uint8_t* frame, Point upperLeftMacroblockCoo) {
 
     return sum;
 }
+int getMedianOfBlock(uint8_t* frame, Point upperLeftMacroblockCoo) {
+    int n = BLOCK_SIZE * BLOCK_SIZE;
+    int sum[BLOCK_SIZE * BLOCK_SIZE];
+    int median;
+    int y, x,i=0;
+    for (y = 0; y < BLOCK_SIZE; y++) {
+        for (x = 0; x < BLOCK_SIZE; x++) {
+            sum[i] = frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x)];
+            i++;
+
+        }
+    }
+    sort(sum, BLOCK_SIZE * BLOCK_SIZE);
+    median = (sum[n / 2] + sum[(n / 2) + 1]) / 2;
+    //printf("Median: %d\n",median);
+
+    return median;
+}
 Point getCenter(Point upperLeft) {
     Point center;
     if (upperLeft.x > (WIDTH - BLOCK_SIZE - 1)) {
@@ -78,6 +96,28 @@ float calculateMAD(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacro
 
 }
 
+float getBiplanarDiff(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo,int median) {
+    float sum = 0;
+    int x, y;
+    int a, b;
+    int ref = median;
+    for (y = 0; y < BLOCK_SIZE; y++) {
+        for (x = 0; x < BLOCK_SIZE; x++) {
+            a = prevFrame[((y + prevMacroblockCoo.y) * WIDTH) + (x + prevMacroblockCoo.x)];
+            b = currentFrame[((y + currentMacroblockCoo.y) * WIDTH) + (x + currentMacroblockCoo.x)];
+            if (a < ref && b < ref) {
+                sum += 1;
+            }
+            if (a >= ref && b >= ref) {
+                sum += 1;
+            }
+            
+        }
+    }
+    return (sum / (BLOCK_ELEMENTS));
+
+}
+
 float calculateSUMDIFF(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo) {
     float sumPrev = 0;
     float sumCurr = 0;
@@ -108,4 +148,23 @@ void getSearchArea(Point prevMacroblockCoo, int searchArea, Point pointsSA[2]) {
     pointsSA[1].x = x;
     pointsSA[1].y = y;
 
+}
+
+void swap(int* p, int* q) {
+    int t;
+
+    t = *p;
+    *p = *q;
+    *q = t;
+}
+
+void sort(int a[], int n) {
+    int i, j, temp;
+
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (a[j] > a[j + 1])
+                swap(&a[j], &a[j + 1]);
+        }
+    }
 }
