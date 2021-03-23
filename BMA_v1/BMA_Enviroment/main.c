@@ -10,9 +10,9 @@
 
 int main(void) {
 	char* videopath = "C:\\Videosekvence\\moving_dashboardYUV444.yuv";//"F:\\odabrani_mirna_centerYUYV.yuv"
-	char* outputYUYVPath = "C:\\Videosekvence\\odabrani_moving_dashboardYUYV30FPS.yuv";
+	char* outputYUYVPath = "F:\\Videosekvence\\odabrani_moving_dashboardYUYVFPS30.yuv";
 	char* testYUV444 = "D:\\Videosekvence\\yuv\\tester444.yuv";
-	char* vectorsPath = "C:\\vektori\\vectors0.bin";
+	char* vectorsPath = "H:\\vektori\\vectors0.bin";
 	char* imagePath = "H:\\image.yuv";
 	int frames[] = {39,67,69,75,79,87,93,95,135,137,149,151,153,155,183,185,187,189,191,203,209,219,301,317,321,329,345,347,351,427,429,431,437,463,689,691};
 	int framesNum = 36;
@@ -48,7 +48,7 @@ int main(void) {
 	getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
 	free(image);
 
-	int numofmatches = blockMatchingMYBMA(vectors,currframey,prevframey,7);
+	int numofmatches = blockMatchingMYBMA(vectors,currframey,prevframey,35);
 	
 	//numofmatches = filterVectorsFlow(vectors, numofmatches);
 	

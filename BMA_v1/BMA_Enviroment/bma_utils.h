@@ -16,6 +16,7 @@
 #define BLOCK_ELEMENTS (BLOCK_SIZE*BLOCK_SIZE)
 #define RANDOM(upper,lower) ((rand() % (upper - lower + 1)) + lower)
 #define CAST_ANGLE(prev)(prev<0?(360+prev):prev)
+#define CAST_ANGLE_DIS(prev)(prev>180?(360-prev):prev)
 
 typedef struct {
 	int x;

@@ -210,7 +210,7 @@ float euclideanDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr
     volatile int ftr_i;
     for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
         if (ftr_i == FTR_ANGLE) {
-            sum += pow(CAST_ANGLE(abs((int16_t)(mean[ftr_i] - vectors[ftr_i][v_index])) % 360), 2);
+            sum += pow(CAST_ANGLE_DIS(abs((int16_t)(mean[ftr_i] - vectors[ftr_i][v_index])) % 360), 2);
         }
         else {
             sum += pow(vectors[ftr_i][v_index] - (int16_t)mean[ftr_i], 2);

@@ -8,10 +8,11 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
     int deviation, x, y;
     Point privFrom, privTo;
     int index = 0;
+    Point predicted;
     
 
 
-    for (y = 0; y < HEIGHT - (HEIGHT % BLOCK_SIZE); y += BLOCK_SIZE) {
+    for (y = 0; y < HEIGHT - (HEIGHT % BLOCK_SIZE)-200; y += BLOCK_SIZE) {
         for (x = 0; x < WIDTH - ((WIDTH % BLOCK_SIZE)); x += BLOCK_SIZE) {
             prevMacroblockCoo.x = x;
             prevMacroblockCoo.y = y;
@@ -26,8 +27,20 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
                 //printf("Deviation: %d\n", deviation);
                 //float varin = ((float)deviation)/(BLOCK_SIZE*BLOCK_SIZE);
                 //Vps_printf("Variance deviation %f", varin);
+                if (index!=0) {
+                    prevMacroblockCoo = getCenter(prevMacroblockCoo);
 
-                privTo = getBestMatchMYBMA(prevMacroblockCoo, currentFrame, prevFrame, step, median);
+                    predicted.x = prevMacroblockCoo.x + (vectors[2][index - 1]-vectors[0][index - 1]);
+                    predicted.y = prevMacroblockCoo.y + (vectors[3][index - 1] - vectors[1][index - 1]);
+                    predicted = getUpperLeft(predicted);
+                    prevMacroblockCoo = getUpperLeft(prevMacroblockCoo);
+                    //printf("predicted.x %d; predicted.y: %d, prev.x %d; prev.y %d\n", predicted.x, predicted.y, prevMacroblockCoo.x, prevMacroblockCoo.y);
+                }
+                else {
+                    predicted = prevMacroblockCoo;
+                }
+
+                privTo = getBestMatchMYBMA(prevMacroblockCoo, currentFrame, prevFrame, step, predicted);
 
 
             }
@@ -37,7 +50,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
 
 
             int length = calculateLength2Points(privFrom, privTo);
-            if (length > 2) {
+            //if (length > 2) {
                 vectors[0][index] = (int16_t)privFrom.x;
                 vectors[1][index] = (int16_t)privFrom.y;
                 vectors[2][index] = (int16_t)privTo.x;
@@ -45,8 +58,8 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
                 vectors[4][index] = (int16_t)length;
                 vectors[5][index] = CAST_ANGLE(calculateAngle2Points(privTo, privFrom));
                 index++;
-            }
-            //printf("(%d,%d)", matches[index].x, matches[index].y);
+            //}
+            
 
 
 
@@ -58,7 +71,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
 
 }
 
-Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int stepOrig,int median) {
+Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int stepOrig,Point predicted) {
     Point best;
     Point points[9];
     Point currentMacroblockCoo;
@@ -66,7 +79,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
 
     /////blockSize*blockSize
     //////postavljanje na sredinu makrobloka
-    points[0] = getCenter(prevMacroblockCoo);
+    points[0] = getCenter(predicted);
     int idBest=0;
 
     float minMad = 99999.999;
@@ -225,9 +238,9 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
             
         }
         
-        if (idBest > 0) {
+        /*if (idBest > 0) {
             step = stepOrig;
-        }
+        }*/
         
         /*if (minMad > 1.0 && (best.x != lastBest.x && best.y != lastBest.y)) {
             step = step;
@@ -243,7 +256,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
     ///////// vracanje na gornji lijevi ugao makrobloka
     printf("\nWinners %f ", minMad);
     best = getUpperLeft(best);
-    if (minMad >3.0) {
+    if (minMad >3) {
         best = prevMacroblockCoo;
     }
     return best;

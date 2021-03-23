@@ -113,10 +113,10 @@ Point getBestMatchTSS(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* p
 
     }
 
-    //printf("MinMAD: %f\n", minMad);
+    printf("MinMAD: %f\n", minMad);
     ///////// vracanje na gornji lijevi ugao makrobloka
     best = getUpperLeft(best);
-    if (minMad > 3.00) {
+    if (minMad > 5.00) {
         best = prevMacroblockCoo;
     }
     return best;
