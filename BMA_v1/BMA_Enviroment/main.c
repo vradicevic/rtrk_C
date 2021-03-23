@@ -3,18 +3,20 @@
 #include "yuv_convert_utils.h"
 #include "tss.h"
 #include "my_bma.h"
+#include "ebma.h"
 #include <time.h>
 #include "vectors_filtering.h"
+#include "hibrid_bma.h"
 
 
 
 int main(void) {
-	char* videopath = "C:\\Videosekvence\\moving_dashboardYUV444.yuv";//"F:\\odabrani_mirna_centerYUYV.yuv"
-	char* outputYUYVPath = "F:\\Videosekvence\\odabrani_moving_dashboardYUYVFPS30.yuv";
+	char* videopath = "D:\\Videosekvence\\yuv\\moving_dashboardYUV444FPS30.yuv";//"F:\\odabrani_mirna_centerYUYV.yuv"
+	char* outputYUYVPath = "D:\\Videosekvence\\yuv\\odabrani_moving_dashboardYUYVFPS30.yuv";
 	char* testYUV444 = "D:\\Videosekvence\\yuv\\tester444.yuv";
-	char* vectorsPath = "H:\\vektori\\vectors0.bin";
+	char* vectorsPath = "D:\\vektori\\vectors0.bin";
 	char* imagePath = "H:\\image.yuv";
-	int frames[] = {39,67,69,75,79,87,93,95,135,137,149,151,153,155,183,185,187,189,191,203,209,219,301,317,321,329,345,347,351,427,429,431,437,463,689,691};
+	int frames[] = { 39,67,69,75,79,87,93,95,135,137,149,151,153,155,183,185,187,189,191,203,209,219,301,317,321,329,345,347,351,427,429,431,437,463,689,691 };
 	int framesNum = 36;
 	int ftr_num = 6;
 	uint8_t* yuv444;
@@ -30,8 +32,8 @@ int main(void) {
 		free(yuv444);
 
 	}
-	printf("Everything finished\n");*/
-	
+	printf("Everything finished\n");
+	*/
 	
 	int maxMatches = (WIDTH / BLOCK_SIZE) * (HEIGHT / BLOCK_SIZE);
 	int16_t** vectors = (int16_t**)malloc(sizeof(int16_t*)*ftr_num);
@@ -48,7 +50,7 @@ int main(void) {
 	getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
 	free(image);
 
-	int numofmatches = blockMatchingMYBMA(vectors,currframey,prevframey,35);
+	int numofmatches = blockMatchingHBMA(vectors,currframey,prevframey,15);
 	
 	//numofmatches = filterVectorsFlow(vectors, numofmatches);
 	

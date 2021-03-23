@@ -20,7 +20,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
             prevMacroblockCoo = getUpperLeft(prevMacroblockCoo);
             privFrom = prevMacroblockCoo;
 
-            int median = getMedianOfBlock(currentFrame, prevMacroblockCoo);
+            //int median = getMedianOfBlock(currentFrame, prevMacroblockCoo);
             deviation = blockValueDeviation(currentFrame, prevMacroblockCoo);
 
             if (((float)deviation) / (BLOCK_SIZE * BLOCK_SIZE) > 5.0) {
@@ -154,8 +154,6 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
             skips[6] = 0;
             skips[7] = 1;
             skips[8] = 1;
-            
-            
         }
         else if (idBest == 2) {
             skips[1] = 1;
@@ -256,7 +254,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
     ///////// vracanje na gornji lijevi ugao makrobloka
     printf("\nWinners %f ", minMad);
     best = getUpperLeft(best);
-    if (minMad >3) {
+    if (minMad >4) {
         best = prevMacroblockCoo;
     }
     return best;
