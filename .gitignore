@@ -8,8 +8,6 @@
 /YUV422IYUYVGenerator/YUV422IYUYVGenerator.vcxproj.user
 */Debug
 */.vs
-
-
 *.ipch
 *.obj
 *.pdb
