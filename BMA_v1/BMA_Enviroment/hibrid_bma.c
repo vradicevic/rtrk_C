@@ -84,7 +84,7 @@ Point getBestMatchHBMA(Point prevMacroblockCoo, uint8_t * currentFrame, uint8_t 
 
 	float minMad = 99999.999;
 	float MAD;
-	best = points[0];
+	//best = points[0];
 	int i,x,y;
 
 	int flag = 1;

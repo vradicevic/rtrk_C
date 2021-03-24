@@ -12,6 +12,6 @@ char* videoMirnaRight60FPS = "F:\\Videosekvence\\yuv\\odabrani_mirna_leftYUYVFPS
 char* videoMirnaCenter30FPS = "F:\\Videosekvence\\yuv\\odabrani_mirna_leftYUYVFPS30.yuv";
 char* videoMirnaCenter60FPS = "F:\\Videosekvence\\yuv\\odabrani_mirna_leftYUYVFPS60.yuv";
 
-char* vectorsPath = "D:\\vektori\\vectors0.bin";
+char* vectorsPath = "H:\\vektori\\vectors0.bin";
 
 #endif // !_PATHS_H
