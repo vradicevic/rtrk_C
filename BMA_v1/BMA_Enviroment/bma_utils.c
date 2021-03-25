@@ -86,7 +86,7 @@ Point getUpperLeft(Point center) {
 float calculateMAD(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo) {
     float sum = 0;
     int x, y;
-    for (y = 0; y < BLOCK_SIZE; y++) {
+    for (y= 0; y < BLOCK_SIZE; y++) {
         for (x = 0; x < BLOCK_SIZE; x++) {
             sum = sum + (fabs((float)prevFrame[((y + prevMacroblockCoo.y) * WIDTH) + (x + prevMacroblockCoo.x)] - (float)currentFrame[((y + currentMacroblockCoo.y) * WIDTH) + (x + currentMacroblockCoo.x)]));
 

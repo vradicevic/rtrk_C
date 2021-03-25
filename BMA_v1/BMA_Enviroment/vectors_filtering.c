@@ -27,7 +27,30 @@ void allocateArgsForKmeans(int16_t** items, int16_t** interVectors, float** mean
         interVectors[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
     }
 }
-int filterVectorsFlow(int16_t** vectors, int numOfMatches) {
+int16_t** filterByLength(int16_t** vectors, int* numOfMatches,int ftr_num) {
+	int maxMatches = 14400;
+	int16_t** filtered = (int16_t **)malloc(ftr_num*sizeof(int16_t*));
+	for (int i = 0; i < ftr_num; i++) {
+		filtered[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
+	}
+
+	
+	int index = 0;
+	for (int i = 0; i < *numOfMatches; i++) {
+		if (vectors[4][i] > 2) {
+			for (int j = 0; j < ftr_num; j++) {
+				filtered[j][index] = vectors[j][i];
+			}
+			index++;
+		}
+	}
+	//free(vectors);
+	
+	*numOfMatches = index;
+	return filtered;
+}
+
+uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches) {
     int maxMatches = 14400;
     uint8_t cluster_i, cluster_i2;
     int16_t** items;
@@ -72,21 +95,27 @@ int filterVectorsFlow(int16_t** vectors, int numOfMatches) {
 
     
 
-    calculateMeans(means, k, ftr_num, items, numOfMatches, 10000, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
-    findClusters(means, items, numOfMatches, k, ftr_num, belongsTo);
+    calculateMeans(means, k, ftr_num, items, *numOfMatches, 10000, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
+    findClusters(means, items, *numOfMatches, k, ftr_num, belongsTo);
 
-    //cluster_i = calculateVarianceOf(means, vectors, clusterSizes, belongsTo, numOfMatches, k);
+    cluster_i = calculateVarianceOf(means, vectors, clusterSizes, belongsTo, *numOfMatches, k);
     //cluster_i2 = calculateNexBestVariance(means, vectors, clusterSizes, belongsTo, numOfMatches, k, cluster_i);
     ftr_num = 6;
-    copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, 2, numOfMatches, 0);
+    copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, cluster_i, *numOfMatches, 0);
     //copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, cluster_i2, numOfMatches, clusterSizes[cluster_i]);
-    //vectors = interVectors;
-    numOfMatches = clusterSizes[2];
-    vectors = interVectors;
-    
+    *numOfMatches = clusterSizes[cluster_i];
 
-    printf("\nMatches after filtering %d", numOfMatches);
-    printf("\nCluster sizes: %d; %d; %d; %d;", clusterSizes[0], clusterSizes[1], clusterSizes[2], clusterSizes[3]);
-    return numOfMatches;
+
+	items[0] = interVectors[2];
+	items[1] = interVectors[3];
+	items[2] = interVectors[4];
+	ftr_num = 3;
+	angle_ftr_num = ftr_num + 1;
+	k = 2;
+	calculateMeans(means, k, ftr_num, items, *numOfMatches, 10000, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
+	findClusters(means, items, *numOfMatches, k, ftr_num, belongsTo);
+
+    vectors = interVectors;
+    return belongsTo;
 
 }
