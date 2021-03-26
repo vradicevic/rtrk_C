@@ -119,3 +119,16 @@ void saveBelongsTo(char* filepath, uint8_t* buff, int16_t itemsNum) {
 	fclose(file);
 	printf("Write belongsTo done\n");
 }
+
+void saveYComponent(char* filepath,uint8_t* buffY,int width, int height) {
+    FILE* file = fopen(filepath, "wb");
+    fwrite(buffY, sizeof(uint8_t), width * height, file);
+    fclose(file);
+    printf("\nSave Y done!");
+}
+void appendYComponent(char* filepath, uint8_t* buffY, int width, int height) {
+    FILE* file = fopen(filepath, "ab");
+    fwrite(buffY, sizeof(uint8_t), width * height, file);
+    fclose(file);
+    printf("\nSave Y done!");
+}

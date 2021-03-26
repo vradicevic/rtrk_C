@@ -254,7 +254,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
     ///////// vracanje na gornji lijevi ugao makrobloka
     printf("\nWinners %f ", minMad);
     best = getUpperLeft(best);
-    if (minMad >4) {
+    if (minMad >9.0) {
         best = prevMacroblockCoo;
     }
     return best;

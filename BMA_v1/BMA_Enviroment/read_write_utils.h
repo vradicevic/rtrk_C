@@ -31,4 +31,8 @@ void saveYUYVImage(char* imagePath, uint8_t image, int width, int height);
 
 void saveBelongsTo(char* filepath, uint8_t* buff, int16_t itemsNum);
 
+void saveYComponent(char* filepath, uint8_t* buffY, int width, int height);
+
+void appendYComponent(char* filepath, uint8_t* buffY, int width, int height);
+
 #endif

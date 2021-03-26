@@ -1,6 +1,6 @@
 #include "k_mean_clustering.h"
 uint8_t FTR_ANGLE = 0;
-uint8_t calculateVarianceOf(float** means, int16_t** vectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint16_t numOfVectors, uint8_t k) {
+uint8_t calculateVarianceOfAngle(float** means, int16_t** vectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint16_t numOfVectors, uint8_t k) {
     volatile uint16_t i, j;
     float sum = 0;
     float sum2 = 0;
@@ -23,7 +23,7 @@ uint8_t calculateVarianceOf(float** means, int16_t** vectors, uint16_t* clusterS
                 if (j == belongsTo[i]) {
                     //Vps_printf("Usao");
                     //sum2+=vectors[5][i];
-                    sum += (float)CAST_ANGLE(abs((int16_t)(sum2 - vectors[5][i])) % 360);
+                    sum += (float)CAST_ANGLE_DIS(abs((int16_t)(sum2 - vectors[5][i])) % 360);
                     //sum+=abs(means[j][4] - vectors[4][i]);
                 }
             }
@@ -102,7 +102,7 @@ void get2Max(uint16_t* clusterSizes, uint8_t* biggestFirst, uint8_t* biggestSeco
     }
 }
 void copyCluster(int16_t** vectors, int16_t** interVectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint8_t ftr_num, uint8_t cluster_i, int v_s, uint8_t interVsOffset) {
-    volatile uint32_t i, j, z = 0;
+    int i, j, z = 0;
     for (i = 0; i < v_s; i++) {
         if (cluster_i == belongsTo[i]) {
             for (j = 0; j < ftr_num; j++) {
@@ -112,7 +112,16 @@ void copyCluster(int16_t** vectors, int16_t** interVectors, uint16_t* clusterSiz
         }
     }
 }
-
+void copyVectors(int16_t** vectors, int16_t** interVectors, int numOfMatches) {
+    for (int i = 0; i < numOfMatches; i++) {
+        vectors[0][i] = interVectors[0][i];
+        vectors[1][i] = interVectors[1][i];
+        vectors[2][i] = interVectors[2][i];
+        vectors[3][i] = interVectors[3][i];
+        vectors[4][i] = interVectors[4][i];
+        vectors[5][i] = interVectors[5][i];
+    }
+}
 
 void findMinMaxColumns(float* minima, float* maxima, uint8_t ftr_num, int16_t** vectorsFiltered, uint16_t countOfFilteredVectors) {
     volatile int index = 0;
@@ -152,53 +161,53 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
     float inter;
     for (i = 0; i < k; i++) {
         for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
-            means[i][ftr_i] = getRandom(&minima[ftr_i],&maxima[ftr_i]);
+            //means[i][ftr_i] = getRandom(&minima[ftr_i],&maxima[ftr_i]);
 
-            //switch (i) {
-            //case 0: {
+            switch (i) {
+            case 0: {
 
-            //    inter = minima[ftr_i];
-            //    means[i][ftr_i] = inter;
-            //    break;
+                inter = minima[ftr_i];
+                means[i][ftr_i] = inter;
+                break;
 
 
-            //}
-            //case 1: {
+            }
+            case 1: {
 
-            //    inter = maxima[ftr_i];
-            //    means[i][ftr_i] = inter;
-            //    break;
+                inter = maxima[ftr_i];
+                means[i][ftr_i] = inter;
+                break;
 
-            //}
-            //case 2: {
+            }
+            case 2: {
 
-            //    inter = abs(maxima[ftr_i] - minima[ftr_i]);
-            //    inter = minima[ftr_i] + inter;
-            //    means[i][ftr_i] = inter;
-            //    break;
+                inter = abs(maxima[ftr_i] - minima[ftr_i]);
+                inter = minima[ftr_i] + inter;
+                means[i][ftr_i] = inter;
+                break;
 
-            //}
-            //case 3: {
+            }
+            case 3: {
 
-            //    inter = abs(maxima[ftr_i] - minima[ftr_i]);
-            //    means[i][ftr_i] = minima[ftr_i] + (inter / 2);
-            //    break;
+                inter = abs(maxima[ftr_i] - minima[ftr_i]);
+                means[i][ftr_i] = minima[ftr_i] + (inter / 2);
+                break;
 
-            //}
-            //case 4: {
-            //    inter = abs(maxima[ftr_i] - minima[ftr_i]);
-            //    means[i][ftr_i] = maxima[ftr_i] - (inter / 2);
-            //    break;
+            }
+            case 4: {
+                inter = abs(maxima[ftr_i] - minima[ftr_i]);
+                means[i][ftr_i] = maxima[ftr_i] - (inter / 2);
+                break;
 
-            //}
-            //case 5: {
-            //    inter = abs(maxima[ftr_i] - minima[ftr_i]);
-            //    means[i][ftr_i] = inter;
-            //    break;
+            }
+            case 5: {
+                inter = abs(maxima[ftr_i] - minima[ftr_i]);
+                means[i][ftr_i] = inter;
+                break;
 
-            //}
+            }
 
-            //}
+            }
 
         }
     }

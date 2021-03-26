@@ -7,10 +7,11 @@
 
 
 
-uint8_t calculateVarianceOf(float** means, int16_t** vectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint16_t numOfVectors, uint8_t k);
+uint8_t calculateVarianceOfAngle(float** means, int16_t** vectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint16_t numOfVectors, uint8_t k);
 uint8_t calculateNexBestVariance(float** means, int16_t** vectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint16_t numOfVectors, uint8_t k, uint8_t toIgnore);
 void get2Max(uint16_t* clusterSizes, uint8_t* biggestFirst, uint8_t* biggestSecond, uint8_t* k);
 void copyCluster(int16_t** vectors, int16_t** interVectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint8_t ftr_num, uint8_t cluster_i, int v_s, uint8_t interVsOffset);
+void copyVectors(int16_t** vectors, int16_t** interVectors, int numOfMatches);
 void findMinMaxColumns(float* minima, float* maxima, uint8_t ftr_num, int16_t** vectorsFiltered, uint16_t countOfFilteredVectors);
 float getRandom(float* minima, float* maxima);
 void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, float* maxima);

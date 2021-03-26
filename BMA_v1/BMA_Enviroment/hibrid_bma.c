@@ -75,7 +75,7 @@ Point getBestMatchHBMA(Point prevMacroblockCoo, uint8_t * currentFrame, uint8_t 
 	Point best;
 	Point points[9];
 	Point currentMacroblockCoo;
-	int step = 7;
+	int step = 3;
 
 	/////blockSize*blockSize
 	//////postavljanje na sredinu makrobloka
@@ -255,7 +255,7 @@ Point getBestMatchHBMA(Point prevMacroblockCoo, uint8_t * currentFrame, uint8_t 
 
 	printf("\nWinners %f ", minMad);
 	best = getUpperLeft(best);
-	if (minMad > 4) {
+	if (minMad > 9) {
 		best = prevMacroblockCoo;
 	}
 	return best;

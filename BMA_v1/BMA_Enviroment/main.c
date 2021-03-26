@@ -46,25 +46,28 @@ int main(void) {
 	}
 	uint8_t* currframey=(uint8_t*)malloc(WIDTH*HEIGHT*2);
 	uint8_t* prevframey= (uint8_t*)malloc(WIDTH * HEIGHT * 2);
-	uint8_t* image = readFrameFrom422YUYVVideo(videoMirnaCenter30FPS , WIDTH, HEIGHT, 10);
+	uint8_t* image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 44);
 	getYComponent_YUV422_YUYV(prevframey, image, WIDTH, HEIGHT);
+	//appendFrameToYUYVFile(mirnaCenterPairPath, image, WIDTH, HEIGHT);
 	free(image);
 
-	image = readFrameFrom422YUYVVideo(videoMirnaCenter30FPS, WIDTH, HEIGHT, 11);
+	image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 45);
 	getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
+	//appendFrameToYUYVFile(mirnaCenterPairPath, image, WIDTH, HEIGHT);
 	free(image);
 
-	int numofmatches = blockMatchingHBMA(vectors,currframey,prevframey,15);
+	int numofmatches = blockMatchingHBMA(vectors,currframey,prevframey,7);
 	
-	//numofmatches = filterVectorsFlow(vectors, numofmatches);
-	printf("Num of matches before %d\n",numofmatches);
+	//appendYComponent(pairYPath,currframey,WIDTH,HEIGHT);
+	
+	
 	vectors = filterByLength(vectors, &numofmatches, ftr_num);
-	printf("Num of matches after %d\n", numofmatches);
+	
 	uint8_t* belongsTo = filterVectorsFlow(vectors, &numofmatches);
-	printf("Here\n");
+	
 	saveVectors(vectorsPath, vectors, numofmatches, ftr_num);
 	saveBelongsTo(belongsToPath,belongsTo,numofmatches);
-	
+	getchar();
 	return 0;
 	
 }

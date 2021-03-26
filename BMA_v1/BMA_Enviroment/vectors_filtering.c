@@ -51,6 +51,7 @@ int16_t** filterByLength(int16_t** vectors, int* numOfMatches,int ftr_num) {
 }
 
 uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches) {
+    
     int maxMatches = 14400;
     uint8_t cluster_i, cluster_i2;
     int16_t** items;
@@ -89,33 +90,38 @@ uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches) {
     uint8_t angle_ftr_num = 0;
     ftr_num = 1;
     items[0] =vectors[5];
-    //items[1] =vectors[3];
+    items[1] =vectors[4];
     //items[2] =vectors[5];
     //items[0] = vectors[5];
-
+    
     
 
     calculateMeans(means, k, ftr_num, items, *numOfMatches, 10000, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
     findClusters(means, items, *numOfMatches, k, ftr_num, belongsTo);
-
-    cluster_i = calculateVarianceOf(means, vectors, clusterSizes, belongsTo, *numOfMatches, k);
-    //cluster_i2 = calculateNexBestVariance(means, vectors, clusterSizes, belongsTo, numOfMatches, k, cluster_i);
+    
+    cluster_i = calculateVarianceOfAngle(means, vectors, clusterSizes, belongsTo, *numOfMatches, k);
+    cluster_i2 = calculateNexBestVariance(means, vectors, clusterSizes, belongsTo, numOfMatches, k, cluster_i);
     ftr_num = 6;
     copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, cluster_i, *numOfMatches, 0);
-    //copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, cluster_i2, numOfMatches, clusterSizes[cluster_i]);
-    *numOfMatches = clusterSizes[cluster_i];
+    copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, cluster_i2, *numOfMatches, clusterSizes[cluster_i]);
+    *numOfMatches = clusterSizes[cluster_i] + clusterSizes[cluster_i2];
+    
+    
+    //*numOfMatches = clusterSizes[cluster_i];
 
 
 	items[0] = interVectors[2];
 	items[1] = interVectors[3];
 	items[2] = interVectors[4];
-	ftr_num = 3;
-	angle_ftr_num = ftr_num + 1;
+    items[3] = interVectors[5];
+	ftr_num = 4;
+	angle_ftr_num = 3;
 	k = 2;
 	calculateMeans(means, k, ftr_num, items, *numOfMatches, 10000, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
 	findClusters(means, items, *numOfMatches, k, ftr_num, belongsTo);
-
-    vectors = interVectors;
+    
+    copyVectors(vectors, interVectors, *numOfMatches);
+    
     return belongsTo;
 
 }
