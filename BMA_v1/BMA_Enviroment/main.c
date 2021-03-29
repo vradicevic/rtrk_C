@@ -48,17 +48,17 @@ int main(void) {
 	uint8_t* prevframey= (uint8_t*)malloc(WIDTH * HEIGHT * 2);
 	uint8_t* image = readFrameFrom422YUYVVideo(videoMirnaCenter30FPS, WIDTH, HEIGHT, 12);
 	getYComponent_YUV422_YUYV(prevframey, image, WIDTH, HEIGHT);
-	//appendFrameToYUYVFile(mirnaCenterPairPath, image, WIDTH, HEIGHT);
+	
 	free(image);
 
 	image = readFrameFrom422YUYVVideo(videoMirnaCenter30FPS, WIDTH, HEIGHT, 13);
 	getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
-	//appendFrameToYUYVFile(mirnaCenterPairPath, image, WIDTH, HEIGHT);
+	
 	free(image);
 
 	int numofmatches = blockMatchingHBMA(vectors,currframey,prevframey,7);
 	
-	//appendYComponent(pairYPath,currframey,WIDTH,HEIGHT);
+	
 	
 	
 	vectors = filterByLength(vectors, &numofmatches, ftr_num);

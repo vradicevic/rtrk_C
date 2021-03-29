@@ -84,7 +84,7 @@ uint8_t calculateNexBestVariance(float** means, int16_t** vectors, uint16_t* clu
 
 
 }
-void get2Max(uint16_t* clusterSizes, uint8_t* biggestFirst, uint8_t* biggestSecond, uint8_t* k) {
+void get2Max(uint16_t* clusterSizes, uint8_t* biggestFirst, uint8_t* biggestSecond, int* k) {
     volatile uint8_t i;
     (*biggestFirst) = 0;
     (*biggestSecond) = 0;
@@ -112,7 +112,7 @@ void copyCluster(int16_t** vectors, int16_t** interVectors, uint16_t* clusterSiz
             z++;
         }
     }
-    printf("\nValue of z %d a cluster sizes %d\n", z,clusterSizes[cluster_i]);
+    //printf("\nValue of z %d a cluster sizes %d\n", z,clusterSizes[cluster_i]);
 }
 void copyVectors(int16_t** vectors, int16_t** interVectors, int numOfMatches) {
     for (int i = 0; i < numOfMatches; i++) {
@@ -164,9 +164,9 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
     float inter;
     for (i = 0; i < k; i++) {
         for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
-            //means[i][ftr_i] = getRandom(&minima[ftr_i],&maxima[ftr_i]);
+            means[i][ftr_i] = getRandom(&minima[ftr_i],&maxima[ftr_i]);
 
-            switch (i) {
+            /*switch (i) {
             case 0: {
 
                 inter = minima[ftr_i];
@@ -210,7 +210,7 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
 
             }
 
-            }
+            }*/
 
         }
     }
@@ -259,8 +259,8 @@ int classify(float** means, int16_t** vectors, int v_index, uint8_t k, uint8_t f
     return index;
 
 }
-void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors, uint16_t countOfVectors, int maxIterations, uint8_t* belongsTo, uint16_t* clusterSizes, float* minima, float* maxima) {
-
+void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors, uint16_t countOfVectors, int maxIterations, uint8_t* belongsTo, uint16_t* clusterSizes, float* minima, float* maxima,int ftr_angle) {
+	FTR_ANGLE = ftr_angle;
     //Vps_printf("Alocirani minima i maxima");
     volatile int i, j;
     int index;

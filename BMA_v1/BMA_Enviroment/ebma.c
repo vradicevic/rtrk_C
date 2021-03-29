@@ -84,7 +84,7 @@ Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* 
         }
 
     }
-    printf("MinMad u EBMI= %f\n", minMad);
+    //printf("MinMad u EBMI= %f\n", minMad);
     if (minMad > 9.0) {
         best = prevMacroblockCoo;
     }
