@@ -112,7 +112,7 @@ void saveYUYVImage(char* imagePath, uint8_t image, int width, int height) {
     fclose(file);
 }
 
-void saveBelongsTo(char* filepath, uint8_t* buff, int16_t itemsNum) {
+void saveBelongsTo(char* filepath, uint8_t* buff, int itemsNum) {
 	FILE* file = fopen(filepath, "wb");
 	//fwrite(&itemsNum, sizeof(int16_t), 1, file);
 	fwrite(buff, sizeof(uint8_t), itemsNum, file);

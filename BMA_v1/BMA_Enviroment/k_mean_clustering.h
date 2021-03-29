@@ -19,6 +19,6 @@ float euclideanDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr
 void updateMean(uint16_t clusterSize, float* mean, int16_t** vectors, int v_index, uint8_t ftr_num);
 int classify(float** means, int16_t** vectors, int v_index, uint8_t k, uint8_t ftr_num);
 void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors, uint16_t countOfVectors, int maxIterations, uint8_t* belongsTo, uint16_t* clusterSizes, float* minima, float* maxima);
-void findClusters(float** means, int16_t** vectors, uint16_t countOfVectors, uint8_t k, uint8_t ftr_num, uint8_t* clusters);
+void findClusters(float** means, int16_t** vectors, uint16_t countOfVectors, uint8_t k, uint8_t ftr_num, uint16_t* clusterSizes, uint8_t* clusters);
 
 #endif

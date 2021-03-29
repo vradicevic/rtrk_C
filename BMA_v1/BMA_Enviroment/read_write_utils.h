@@ -29,7 +29,7 @@ void appendFrameToYUV444File(char* filepath, uint8_t* yuv444, int width, int hei
 
 void saveYUYVImage(char* imagePath, uint8_t image, int width, int height);
 
-void saveBelongsTo(char* filepath, uint8_t* buff, int16_t itemsNum);
+void saveBelongsTo(char* filepath, uint8_t* buff, int itemsNum);
 
 void saveYComponent(char* filepath, uint8_t* buffY, int width, int height);
 

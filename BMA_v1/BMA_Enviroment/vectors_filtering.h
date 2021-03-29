@@ -10,4 +10,6 @@ int16_t** filterByLength(int16_t** vectors, int* numOfMatches, int ftr_num);
 
 uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches);
 
+int filterByDistanceFromMean(int16_t** vectors,int16_t** newVectors, float** means, uint8_t* belongsTo,int k, int clusterId, int numOfVectors, int isAngle);
+
 #endif

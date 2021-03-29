@@ -7,7 +7,7 @@ int calculateLength2Points(Point from, Point to) {
 }
 int calculateAngle2Points(Point to, Point from) {
     int result = atan2((float)(to.y - from.y), (float)(to.x - from.x)) * 180 / PI;
-
+    //printf("Angle u calculate angleu: %d\n", result);
     return result;
 }
 

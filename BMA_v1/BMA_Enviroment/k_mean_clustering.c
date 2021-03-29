@@ -108,9 +108,11 @@ void copyCluster(int16_t** vectors, int16_t** interVectors, uint16_t* clusterSiz
             for (j = 0; j < ftr_num; j++) {
                 interVectors[j][interVsOffset + z] = vectors[j][i];
             }
+            //printf("\nCopy clusters angle: %d\n", interVectors[5][interVsOffset]);
             z++;
         }
     }
+    printf("\nValue of z %d a cluster sizes %d\n", z,clusterSizes[cluster_i]);
 }
 void copyVectors(int16_t** vectors, int16_t** interVectors, int numOfMatches) {
     for (int i = 0; i < numOfMatches; i++) {
@@ -120,6 +122,7 @@ void copyVectors(int16_t** vectors, int16_t** interVectors, int numOfMatches) {
         vectors[3][i] = interVectors[3][i];
         vectors[4][i] = interVectors[4][i];
         vectors[5][i] = interVectors[5][i];
+        //printf("\nCopy vektors angle: %d\n", vectors[5][i]);
     }
 }
 
@@ -312,9 +315,13 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
 
 
 }
-void findClusters(float** means, int16_t** vectors, uint16_t countOfVectors, uint8_t k, uint8_t ftr_num, uint8_t* clusters) {
+void findClusters(float** means, int16_t** vectors, uint16_t countOfVectors, uint8_t k, uint8_t ftr_num,uint16_t* clusterSizes, uint8_t* clusters) {
     volatile int i;
+    for (i = 0; i < k; i++) {
+        clusterSizes[i] = 0;
+    }
     for (i = 0; i < countOfVectors; i++) {
         clusters[i] = (uint8_t)classify(means, vectors, i, k, ftr_num);
+        clusterSizes[clusters[i]] += 1;
     }
 }

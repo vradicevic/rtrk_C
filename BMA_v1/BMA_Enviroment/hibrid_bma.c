@@ -57,9 +57,10 @@ int blockMatchingHBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
 			vectors[3][index] = (int16_t)privTo.y;
 			vectors[4][index] = (int16_t)length;
 			vectors[5][index] = CAST_ANGLE(calculateAngle2Points(privTo, privFrom));
+			
 			index++;
 			//}
-
+			
 
 
 
@@ -253,7 +254,7 @@ Point getBestMatchHBMA(Point prevMacroblockCoo, uint8_t * currentFrame, uint8_t 
 		
 	}
 
-	printf("\nWinners %f ", minMad);
+	//printf("\nWinners %f ", minMad);
 	best = getUpperLeft(best);
 	if (minMad > 9) {
 		best = prevMacroblockCoo;
