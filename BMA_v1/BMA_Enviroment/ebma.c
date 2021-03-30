@@ -5,7 +5,7 @@ int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
     int deviation, x, y;
     Point privFrom, privTo;
     int index = 0;
-    for (y = 0; y < HEIGHT - (HEIGHT % BLOCK_SIZE); y += BLOCK_SIZE) {
+    for (y = 200; y < (HEIGHT - (HEIGHT % BLOCK_SIZE)-200); y += BLOCK_SIZE) {
         for (x = 0; x < WIDTH - ((WIDTH % BLOCK_SIZE)); x += BLOCK_SIZE) {
             prevMacroblockCoo.x = x;
             prevMacroblockCoo.y = y;

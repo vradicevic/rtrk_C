@@ -95,6 +95,20 @@ float calculateMAD(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacro
     return (sum / (BLOCK_ELEMENTS));
 
 }
+uint32_t calculateSAE(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo) {
+	uint32_t sum1=0, sum2=0, sum3=0, sum4=0;
+	int x, y;
+	for (y = 0; y < BLOCK_SIZE; y++) {
+		for (x = 0; x < BLOCK_SIZE; x+=4) {
+			sum1 = sum1 + (abs(prevFrame[((y + prevMacroblockCoo.y) * WIDTH) + (x + prevMacroblockCoo.x)] - currentFrame[((y + currentMacroblockCoo.y) * WIDTH) + (x + currentMacroblockCoo.x)]));
+			sum2 = sum2 + (abs(prevFrame[((y + prevMacroblockCoo.y) * WIDTH) + (x + prevMacroblockCoo.x+1)] - currentFrame[((y + currentMacroblockCoo.y) * WIDTH) + (x + currentMacroblockCoo.x+1)]));
+			sum3 = sum3 + (abs(prevFrame[((y + prevMacroblockCoo.y) * WIDTH) + (x + prevMacroblockCoo.x+2)] - currentFrame[((y + currentMacroblockCoo.y) * WIDTH) + (x + currentMacroblockCoo.x+2)]));
+			sum4 = sum4 + (abs(prevFrame[((y + prevMacroblockCoo.y) * WIDTH) + (x + prevMacroblockCoo.x+3)] - currentFrame[((y + currentMacroblockCoo.y) * WIDTH) + (x + currentMacroblockCoo.x+3)]));
+		}
+	}
+
+	return (sum1 + sum2) + (sum3 + sum4);
+}
 
 float getBiplanarDiff(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo,int median) {
     float sum = 0;

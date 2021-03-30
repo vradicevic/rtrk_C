@@ -226,9 +226,9 @@ float euclideanDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr
             sum += pow(CAST_ANGLE_DIS(abs((int16_t)(mean[ftr_i] - vectors[ftr_i][v_index])) % 360), 2);
         }
         else {
-            sum += pow(vectors[ftr_i][v_index] - (int16_t)mean[ftr_i], 2);
+            sum += pow((float)vectors[ftr_i][v_index] - mean[ftr_i], 2);
         }
-
+		
 
     }
     return sqrt(sum);
