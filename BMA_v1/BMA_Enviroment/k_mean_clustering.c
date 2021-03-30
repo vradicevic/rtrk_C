@@ -87,7 +87,7 @@ uint8_t calculateNexBestVariance(float** means, int16_t** vectors, uint16_t* clu
 void get2Max(uint16_t* clusterSizes, uint8_t* biggestFirst, uint8_t* biggestSecond, int* k) {
     volatile uint8_t i;
     (*biggestFirst) = 0;
-    (*biggestSecond) = 0;
+    (*biggestSecond) = 1;
     for (i = 0; i < *k; i++) {
         if (clusterSizes[i] > clusterSizes[*biggestFirst]) {
             *biggestFirst = i;
@@ -100,6 +100,7 @@ void get2Max(uint16_t* clusterSizes, uint8_t* biggestFirst, uint8_t* biggestSeco
             }
         }
     }
+	printf("\nKlasteri: %d %d\n", clusterSizes[*biggestFirst], clusterSizes[*biggestSecond]);
 }
 void copyCluster(int16_t** vectors, int16_t** interVectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint8_t ftr_num, uint8_t cluster_i, int v_s, uint8_t interVsOffset) {
     int i, j, z = 0;

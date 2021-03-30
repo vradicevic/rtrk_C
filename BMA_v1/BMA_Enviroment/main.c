@@ -56,7 +56,7 @@ int main(void) {
 	
 	free(image);
 
-	int numofmatches = blockMatchingHBMA(vectors,currframey,prevframey,7);
+	int numofmatches = blockMatchingMYBMA(vectors,currframey,prevframey,7);
 	
 	
 	
