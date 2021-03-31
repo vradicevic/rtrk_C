@@ -46,12 +46,12 @@ int main(void) {
 	}
 	uint8_t* currframey=(uint8_t*)malloc(WIDTH*HEIGHT*2);
 	uint8_t* prevframey= (uint8_t*)malloc(WIDTH * HEIGHT * 2);
-	uint8_t* image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 44);
+	uint8_t* image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 64);
 	getYComponent_YUV422_YUYV(prevframey, image, WIDTH, HEIGHT);
 	
 	free(image);
 
-	image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 45);
+	image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 65);
 	getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
 	
 	free(image);

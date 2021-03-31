@@ -84,48 +84,8 @@ uint8_t calculateNexBestVariance(float** means, int16_t** vectors, uint16_t* clu
 
 
 }
-void get2Max(uint16_t* clusterSizes, uint8_t* biggestFirst, uint8_t* biggestSecond, int* k) {
-    volatile uint8_t i;
-    (*biggestFirst) = 0;
-    (*biggestSecond) = 1;
-    for (i = 0; i < *k; i++) {
-        if (clusterSizes[i] > clusterSizes[*biggestFirst]) {
-            *biggestFirst = i;
-        }
-    }
-    for (i = 0; i < *k; i++) {
-        if (*biggestFirst != i) {
-            if (clusterSizes[i] > clusterSizes[*biggestSecond]) {
-                *biggestSecond = i;
-            }
-        }
-    }
-	printf("\nKlasteri: %d %d\n", clusterSizes[*biggestFirst], clusterSizes[*biggestSecond]);
-}
-void copyCluster(int16_t** vectors, int16_t** interVectors, uint16_t* clusterSizes, uint8_t* belongsTo, uint8_t ftr_num, uint8_t cluster_i, int v_s, uint8_t interVsOffset) {
-    int i, j, z = 0;
-    for (i = 0; i < v_s; i++) {
-        if (cluster_i == belongsTo[i]) {
-            for (j = 0; j < ftr_num; j++) {
-                interVectors[j][interVsOffset + z] = vectors[j][i];
-            }
-            //printf("\nCopy clusters angle: %d\n", interVectors[5][interVsOffset]);
-            z++;
-        }
-    }
-    //printf("\nValue of z %d a cluster sizes %d\n", z,clusterSizes[cluster_i]);
-}
-void copyVectors(int16_t** vectors, int16_t** interVectors, int numOfMatches) {
-    for (int i = 0; i < numOfMatches; i++) {
-        vectors[0][i] = interVectors[0][i];
-        vectors[1][i] = interVectors[1][i];
-        vectors[2][i] = interVectors[2][i];
-        vectors[3][i] = interVectors[3][i];
-        vectors[4][i] = interVectors[4][i];
-        vectors[5][i] = interVectors[5][i];
-        //printf("\nCopy vektors angle: %d\n", vectors[5][i]);
-    }
-}
+
+
 
 void findMinMaxColumns(float* minima, float* maxima, uint8_t ftr_num, int16_t** vectorsFiltered, uint16_t countOfFilteredVectors) {
     volatile int index = 0;
@@ -165,9 +125,9 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
     float inter;
     for (i = 0; i < k; i++) {
         for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
-            means[i][ftr_i] = getRandom(&minima[ftr_i],&maxima[ftr_i]);
+			means[i][ftr_i] = getRandom(&minima[ftr_i], &maxima[ftr_i]);
 
-            /*switch (i) {
+            switch (i) {
             case 0: {
 
                 inter = minima[ftr_i];
@@ -208,10 +168,9 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
                 inter = abs(maxima[ftr_i] - minima[ftr_i]);
                 means[i][ftr_i] = inter;
                 break;
-
             }
-
-            }*/
+			
+            }
 
         }
     }
