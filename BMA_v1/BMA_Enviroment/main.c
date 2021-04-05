@@ -16,28 +16,16 @@ int main(void) {
 	
 	
 	
-	char* savePairPath = "D:\\Videosekvence\\Odabrani_parovi\\";
-	int frames[] = { 39,67,69,75,79,87,93,95,135,137,149,151,153,155,183,185,187,189,191,203,209,219,301,317,321,329,345,347,351,427,429,431,437,463,689,691 };
-	int framesNum = 36;
+	char* savePath = "C:\\Videosekvence\\yuv\\moving_selected_five.yuv";
+	int frames[] = { 1,5,7,11,19,25 };
+	int framesNum = 5;
 	int ftr_num = 6;
 	uint8_t* yuv444;
 	uint8_t* yuyv = (uint8_t*)malloc(WIDTH * HEIGHT * 2 * sizeof(uint8_t));
 
+	
 
-
-	/*for (int i = 0; i < framesNum; i++) {
-		yuv444 = readFrameFrom444YUVVideo(videopath, WIDTH, HEIGHT, frames[i]);
-		convertYUV444ToYUYV422(yuv444, yuyv, WIDTH, HEIGHT);
-		appendFrameToYUYVFile(outputYUYVPath, yuyv, WIDTH, HEIGHT);
-		free(yuv444);
-		yuv444 = readFrameFrom444YUVVideo(videopath, WIDTH, HEIGHT, frames[i]+1);
-		convertYUV444ToYUYV422(yuv444, yuyv, WIDTH, HEIGHT);
-		appendFrameToYUYVFile(outputYUYVPath, yuyv, WIDTH, HEIGHT);
-		free(yuv444);
-
-	}
-	printf("Everything finished\n");
-	*/
+	
 	
 	int maxMatches = (WIDTH / BLOCK_SIZE) * (HEIGHT / BLOCK_SIZE);
 	int16_t** vectors = (int16_t**)malloc(sizeof(int16_t*)*ftr_num);
@@ -71,3 +59,4 @@ int main(void) {
 	return 0;
 	
 }
+
