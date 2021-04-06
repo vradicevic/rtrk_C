@@ -33,7 +33,7 @@ int blockMatchingTSS(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFram
 
 
             int length = calculateLength2Points(privFrom, privTo);
-            if (length > 2) {
+            //if (length > 2) {
                 vectors[0][index] = (int16_t)privFrom.x;
                 vectors[1][index] = (int16_t)privFrom.y;
                 vectors[2][index] = (int16_t)privTo.x;
@@ -41,7 +41,7 @@ int blockMatchingTSS(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFram
                 vectors[4][index] = (int16_t)length;
                 vectors[5][index] = CAST_ANGLE(calculateAngle2Points(privTo, privFrom));
                 index++;
-            }
+            //}
             //printf("(%d,%d)", matches[index].x, matches[index].y);
 
 

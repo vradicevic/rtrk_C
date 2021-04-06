@@ -34,12 +34,12 @@ int main(void) {
 	}
 	uint8_t* currframey=(uint8_t*)malloc(WIDTH*HEIGHT*2);
 	uint8_t* prevframey= (uint8_t*)malloc(WIDTH * HEIGHT * 2);
-	uint8_t* image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 64);
+	uint8_t* image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 10);
 	getYComponent_YUV422_YUYV(prevframey, image, WIDTH, HEIGHT);
 	
 	free(image);
 
-	image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 65);
+	image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 11);
 	getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
 	
 	free(image);
@@ -51,7 +51,7 @@ int main(void) {
 	
 	vectors = filterByLength(vectors, &numofmatches, ftr_num);
 	
-	uint8_t* belongsTo = filterVectorsFlowMoving(vectors, &numofmatches);
+	uint8_t* belongsTo = filterVectorsFlowSimple(vectors, &numofmatches);
 	
 	saveVectors(vectorsPath, vectors, numofmatches, ftr_num);
 	saveBelongsTo(belongsToPath,belongsTo,numofmatches);

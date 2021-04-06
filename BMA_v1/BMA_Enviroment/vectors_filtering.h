@@ -16,6 +16,10 @@ void get2Max(uint16_t* clusterSizes, int* biggestFirst, int* biggestSecond, int*
 
 int16_t** filterByLength(int16_t** vectors, int* numOfMatches, int ftr_num);
 
+uint8_t* filterVectorsFlowSimple(int16_t** vectors, int* numOfMatches);
+float getFtrMeanOfK(int16_t* ftr, uint8_t* belongsTo, int count, int cluster_i);
+int getBestKByLengthMean(int16_t* lengths, int k, uint8_t* belongsTo, uint16_t* clusterSizes, int numOfVectors);
+
 uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches);
 
 uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches);
