@@ -15,7 +15,7 @@ uint8_t* readFileYUV420P_YpUVp(char* filepath, int width, int height) {
 }
 
 uint8_t* readFileYUV444_YUV(char* filepath, int width, int height) {
-    uint8_t* yuv444 = (uint8_t*)malloc(width * height * sizeof(uint8_t));
+    uint8_t* yuv444 = (uint8_t*)malloc(width * height *3* sizeof(uint8_t));
     FILE* file = fopen(filepath, "rb");
     fread(yuv444, 1, width * height * 3, file);
     fclose(file);

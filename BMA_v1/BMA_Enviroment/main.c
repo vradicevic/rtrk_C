@@ -8,6 +8,7 @@
 #include "vectors_filtering.h"
 #include "hibrid_bma.h"
 #include "paths.h"
+#include "evaluation_proces.h"
 
 
 
@@ -44,7 +45,7 @@ int main(void) {
 	
 	free(image);
 
-	int numofmatches = blockMatchingEBMA(vectors,currframey,prevframey,25);
+	/*int numofmatches = blockMatchingEBMA(vectors,currframey,prevframey,25);
 	
 	
 	
@@ -54,7 +55,8 @@ int main(void) {
 	uint8_t* belongsTo = filterVectorsFlowSimple(vectors, &numofmatches);
 	
 	saveVectors(vectorsPath, vectors, numofmatches, ftr_num);
-	saveBelongsTo(belongsToPath,belongsTo,numofmatches);
+	saveBelongsTo(belongsToPath,belongsTo,numofmatches);*/
+	evaluate(dataFolder, resultsFolder, vectors);
 	
 	return 0;
 	

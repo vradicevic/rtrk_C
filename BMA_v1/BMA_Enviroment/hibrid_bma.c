@@ -3,7 +3,7 @@
 
 
 
-int blockMatchingHBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFrame, int searchArea) {
+int blockMatchingHBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFrame, int searchArea, Point start, Point end) {
 	Point prevMacroblockCoo;
 	int deviation, x, y;
 	Point privFrom, privTo;
