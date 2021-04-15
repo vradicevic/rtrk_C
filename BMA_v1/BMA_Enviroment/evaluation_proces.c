@@ -24,7 +24,7 @@ void evaluate(char* dataFolderPath,char* resultsFolderPath,int16_t** vectors) {
 			
 			getYComponent_YUV444_YUV(yCurr, yuv, 1280, 720);
 			free(yuv);
-			numOfMatches = blockMatchingEBMA(vectors, yCurr, yPrev, 55);
+			//numOfMatches = blockMatchingEBMA(vectors, yCurr, yPrev, 55);
 			vectors = filterByLength(vectors, &numOfMatches, 6);
 			saveVectors(resultsPath, vectors, numOfMatches, 6);
 		}

@@ -13,7 +13,7 @@
 
 
 int main(void) {
-	char* videopath = "D:\\Videosekvence\\yuv\\moving_dashboardYUV444FPS30.yuv";//"F:\\odabrani_mirna_centerYUYV.yuv"
+	char* videopath = "D:\\moving_selected_five.yuv";//"F:\\odabrani_mirna_centerYUYV.yuv"
 	
 	
 	
@@ -24,7 +24,7 @@ int main(void) {
 	uint8_t* yuv444;
 	uint8_t* yuyv = (uint8_t*)malloc(WIDTH * HEIGHT * 2 * sizeof(uint8_t));
 
-	
+	char imagePath[100];
 
 	
 	
@@ -35,16 +35,25 @@ int main(void) {
 	}
 	uint8_t* currframey=(uint8_t*)malloc(WIDTH*HEIGHT*2);
 	uint8_t* prevframey= (uint8_t*)malloc(WIDTH * HEIGHT * 2);
-	uint8_t* image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 10);
-	getYComponent_YUV422_YUYV(prevframey, image, WIDTH, HEIGHT);
-	
-	free(image);
+	uint8_t* image;
+	int iteration = 20;
+	for (int i = 0; i < iteration; i+=2) {
+		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, i);
+		sprintf(imagePath, "D:\\Videosekvence\\slike\\tests\\test%d.yuv", i);
+		appendFrameToYUYVFile(imagePath, image, WIDTH, HEIGHT);
+		free(image);
+		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, i+1);
+		appendFrameToYUYVFile(imagePath, image, WIDTH, HEIGHT);
+		free(image);
 
-	image = readFrameFrom422YUYVVideo(videoMovingDashboard30FPS, WIDTH, HEIGHT, 11);
-	getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
+	}
 	
-	free(image);
 
+	
+	//getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
+	
+	//free(image);
+	
 	/*int numofmatches = blockMatchingEBMA(vectors,currframey,prevframey,25);
 	
 	
@@ -56,7 +65,7 @@ int main(void) {
 	
 	saveVectors(vectorsPath, vectors, numofmatches, ftr_num);
 	saveBelongsTo(belongsToPath,belongsTo,numofmatches);*/
-	evaluate(dataFolder, resultsFolder, vectors);
+	//evaluate(dataFolder, resultsFolder, vectors);
 	
 	return 0;
 	
