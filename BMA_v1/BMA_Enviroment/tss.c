@@ -93,27 +93,21 @@ Point getBestMatchTSS(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* p
             MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
 
             if (MAD < minMad) {
-                //printf("Iteration:%d \tMAD: %f\n", iteration, MAD);
+                
                 minMad = MAD;
                 best = points[i];
 
             }
 
         }
-        //printf("Iteration:%d \tMAD: %f\n", iteration, minMad);
-
+        
         points[0] = best;
-        /*if (minMad > 1.0 && (best.x != lastBest.x && best.y != lastBest.y)) {
-            step = step;
-            iteration++;
-        }
-        else { step = step / 2; iteration = 0; }*/
+        
         step = step / 2;
 
 
     }
 
-    printf("MinMAD: %f\n", minMad);
     ///////// vracanje na gornji lijevi ugao makrobloka
     best = getUpperLeft(best);
     if (minMad > 9.00) {

@@ -30,6 +30,8 @@ int calculateAngle2Points(Point to, Point from);
 
 float calculateMAD(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo);
 
+int calculateSAE(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo);
+
 float getBiplanarDiff(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo,int median);
 
 float calculateSUMDIFF(uint8_t* currentFrame, uint8_t* prevFrame, Point currentMacroblockCoo, Point prevMacroblockCoo);

@@ -236,23 +236,15 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
             
         }
         
-        /*if (idBest > 0) {
-            step = stepOrig;
-        }*/
         
-        /*if (minMad > 1.0 && (best.x != lastBest.x && best.y != lastBest.y)) {
-            step = step;
-            iteration++;
-        }
-        else { step = step / 2; iteration = 0; }*/
         
 
 
     }
 
-    //printf("MinMAD: %f\n", minMad);
+    
     ///////// vracanje na gornji lijevi ugao makrobloka
-    printf("\nWinners %f ", minMad);
+    
     best = getUpperLeft(best);
     if (minMad >9.0) {
         best = prevMacroblockCoo;

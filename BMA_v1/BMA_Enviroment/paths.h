@@ -1,5 +1,6 @@
 #ifndef _PATHS_H_
 #define _PATHS_H_
+#define _CRT_SECURE_NO_WARNINGS
 char* videoMovingDashboard30FPS = "D:\\Videosekvence\\yuv\\odabrani_moving_dashboardYUYVFPS30.yuv";
 char* videoMovingDashboard60FPS = "D:\\Videosekvence\\yuv\\odabrani_moving_dashboardYUYVFPS60.yuv";
 

@@ -7,8 +7,9 @@
 #include <time.h>
 #include "vectors_filtering.h"
 #include "hibrid_bma.h"
-#include "paths.h"
+//#include "paths.h"
 #include "evaluation_proces.h"
+#include "bma_flow.h"
 
 
 
@@ -22,7 +23,8 @@ int main(void) {
 	int framesNum = 5;
 	int ftr_num = 6;
 	uint8_t* yuv444;
-	uint8_t* yuyv = (uint8_t*)malloc(WIDTH * HEIGHT * 2 * sizeof(uint8_t));
+	char* vectorsPa = "D:\\vektori\\vectors0.bin";
+	//uint8_t* yuyv = (uint8_t*)malloc(WIDTH * HEIGHT * 2 * sizeof(uint8_t));
 
 	char imagePath[100];
 
@@ -33,11 +35,12 @@ int main(void) {
 	for (int i = 0; i < ftr_num; i++) {
 		vectors[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
 	}
+	/*
 	uint8_t* currframey=(uint8_t*)malloc(WIDTH*HEIGHT*2);
 	uint8_t* prevframey= (uint8_t*)malloc(WIDTH * HEIGHT * 2);
 	uint8_t* image;
-	int iteration = 20;
-	for (int i = 0; i < iteration; i+=2) {
+	int iteration = 20;*/
+	/*for (int i = 0; i < iteration; i+=2) {
 		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, i);
 		sprintf(imagePath, "D:\\Videosekvence\\slike\\tests\\test%d.yuv", i);
 		appendFrameToYUYVFile(imagePath, image, WIDTH, HEIGHT);
@@ -46,7 +49,7 @@ int main(void) {
 		appendFrameToYUYVFile(imagePath, image, WIDTH, HEIGHT);
 		free(image);
 
-	}
+	}*/
 	
 
 	
@@ -54,18 +57,19 @@ int main(void) {
 	
 	//free(image);
 	
-	/*int numofmatches = blockMatchingEBMA(vectors,currframey,prevframey,25);
+	int numofmatches = bmaFlow(25,vectors);
 	
 	
 	
 	
 	vectors = filterByLength(vectors, &numofmatches, ftr_num);
-	
+	/*
 	uint8_t* belongsTo = filterVectorsFlowSimple(vectors, &numofmatches);
 	
-	saveVectors(vectorsPath, vectors, numofmatches, ftr_num);
+	
 	saveBelongsTo(belongsToPath,belongsTo,numofmatches);*/
 	//evaluate(dataFolder, resultsFolder, vectors);
+	saveVectors(vectorsPa, vectors, numofmatches, ftr_num);
 	
 	return 0;
 	
