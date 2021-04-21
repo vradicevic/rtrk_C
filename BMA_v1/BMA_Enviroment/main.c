@@ -23,7 +23,7 @@ int main(void) {
 	int framesNum = 5;
 	int ftr_num = 6;
 	uint8_t* yuv444;
-	char* vectorsPa = "D:\\vektori\\vectors0.bin";
+	char* vectorsPa = "H:\\vektori\\vectors0.bin";
 	//uint8_t* yuyv = (uint8_t*)malloc(WIDTH * HEIGHT * 2 * sizeof(uint8_t));
 
 	char imagePath[100];
