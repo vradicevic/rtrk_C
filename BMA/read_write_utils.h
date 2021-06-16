@@ -21,13 +21,17 @@ uint8_t* readFrameFrom444YUVVideo(char* filepath, int width, int height, int fra
 
 uint8_t* readFrameFrom422YUYVVideo(char* filepath, int width, int height, int frameNumber);
 
+uint32_t* read32bitFrameFrom422YUYVVideo(char* filepath, int width, int height, int frameNumber);
+
 void saveVectors(char* filepath, int16_t** buff, int16_t itemsNum, int wordWidth);
 
 void appendFrameToYUYVFile(char* filepath, uint8_t* yuyv, int width, int height);
 
 void appendFrameToYUV444File(char* filepath, uint8_t* yuv444, int width, int height);
 
-void saveYUYVImage(char* imagePath, uint8_t image, int width, int height);
+void saveYUYVImage(char* imagePath, uint8_t* image, int width, int height);
+
+void save32bitYUYVImage(char* imagePath, uint32_t* image, int width, int height);
 
 void saveBelongsTo(char* filepath, uint8_t* buff, int itemsNum);
 

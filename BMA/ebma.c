@@ -11,8 +11,8 @@ int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
     int index = 0;
     int ctr = 0;
     
-    for (y = 200; y < (HEIGHT - (HEIGHT % BLOCK_SIZE)-200); y += BLOCK_SIZE) {
-        for (x = 0; x < WIDTH - ((WIDTH % BLOCK_SIZE)); x += BLOCK_SIZE) {
+    for (y = start.y; y < end.y; y += BLOCK_SIZE) {
+        for (x = start.x; x < end.x; x += BLOCK_SIZE) {
             prevMacroblockCoo.x = x;
             prevMacroblockCoo.y = y;
             
@@ -36,14 +36,12 @@ int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
 
             }
             else {
-                ctr++;
-               
                 privTo = prevMacroblockCoo;
             }
 
             
             int length = calculateLength2Points(privFrom, privTo);
-            if (length > 2) {
+            //if (length > 2) {
                 vectors[0][index] = (int16_t)privFrom.x;
                 vectors[1][index] = (int16_t)privFrom.y;
                 vectors[2][index] = (int16_t)privTo.x;
@@ -51,15 +49,8 @@ int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
                 vectors[4][index] = (int16_t)length;
                 vectors[5][index] = (int16_t)CAST_ANGLE(calculateAngle2Points(privTo, privFrom));
                 index++;
-            }else {
-                vectors[0][index] = (int16_t)privFrom.x;
-                vectors[1][index] = (int16_t)privFrom.y;
-                vectors[2][index] = (int16_t)privFrom.x;
-                vectors[3][index] = (int16_t)privFrom.y;
-                vectors[4][index] = (int16_t)0;
-                vectors[5][index] = (int16_t)0;
-                index++;
-            }
+           
+            //}
             
             //printf("(%d,%d)", matches[index].x, matches[index].y);
 
@@ -75,7 +66,7 @@ int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
 Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int searchArea,int saeTreshold) {
     Point best;
     Point pointsSA[2];
-    clock_t beginTime, endTime;
+    
     getSearchArea(prevMacroblockCoo, searchArea, pointsSA);
     Point currentMacroblockCoo;
     int x, y;
@@ -100,7 +91,7 @@ Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* 
     
     for (y = pointsSA[0].y; y < pointsSA[1].y; y++) {
         for (x = pointsSA[0].x; x < pointsSA[1].x; x++) {
-            beginTime = clock();
+            
             currentMacroblockCoo.x = x;
             currentMacroblockCoo.y = y;
 
@@ -112,8 +103,8 @@ Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* 
 				minSAE = SAE;
                 best = currentMacroblockCoo;
             }
-            endTime = clock();
-            printf("time: %lf\n", ((double)endTime - beginTime) / CLOCKS_PER_SEC);
+            
+            
         }
 
     }

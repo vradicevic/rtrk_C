@@ -188,15 +188,6 @@ uint8_t* filterVectorsFlowSimple(int16_t** vectors, int* numOfMatches) {
 		int16_t* lengths = interVectors[4];
 		
 		cluster_i = getBestKByLengthMean(interVectors[4], k_temp, tempBelongsTo, tempClusterSizes, temp);
-
-		cumulativeVectors[0][cummulativeSize] = (int16_t)getFtrMeanOfK(interVectors[0],tempBelongsTo,temp,cluster_i);
-		cumulativeVectors[1][cummulativeSize] = (int16_t)getFtrMeanOfK(interVectors[1], tempBelongsTo, temp, cluster_i);
-		cumulativeVectors[2][cummulativeSize] = (int16_t)getFtrMeanOfK(interVectors[2], tempBelongsTo, temp, cluster_i);
-		cumulativeVectors[3][cummulativeSize] = (int16_t)getFtrMeanOfK(interVectors[3],tempBelongsTo,temp,cluster_i);
-		cumulativeVectors[4][cummulativeSize] = (int16_t)means[cluster_i][4];
-		cumulativeVectors[5][cummulativeSize] = (int16_t)means[cluster_i][5];
-		
-		printf("\nX,Y,X,Y %d, %d, %d, %d\n", cumulativeVectors[0][cummulativeSize], cumulativeVectors[1][cummulativeSize], cumulativeVectors[2][cummulativeSize], cumulativeVectors[3][cummulativeSize]);
 		cummulativeSize++;
 	}
 	*numOfMatches = cummulativeSize;
@@ -362,7 +353,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
 	uint8_t* tempBelongsTo;
     float* minima;
     float* maxima;
-    uint8_t k=16;
+    uint8_t k=8;
     int ftr_num=6;
     uint16_t clusterSizes[16];
 	uint16_t tempClusterSizes[16];
@@ -402,9 +393,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
     uint8_t angle_ftr_num = 0;
     ftr_num = 1;
     items[0] =vectors[5];
-    items[1] =vectors[3];
-    items[2] =vectors[2];
-    items[3] = vectors[3];
+    
     
     
 
@@ -412,7 +401,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
     findClusters(means, items, *numOfMatches, k, ftr_num, clusterSizes, belongsTo);
 	copyBelongsTo(belongsTo, tempBelongsTo, *numOfMatches);
 	copyClusterSizes(clusterSizes, tempClusterSizes, k);
-	printf("\nCluster sizes: %d; %d; %d; %d;\n", clusterSizes[0], clusterSizes[1], clusterSizes[2], clusterSizes[3]);
+	//printf("\nCluster sizes: %d; %d; %d; %d;\n", clusterSizes[0], clusterSizes[1], clusterSizes[2], clusterSizes[3]);
 	ftr_num = 6;
 	
 	int temp,k_temp= k,best,cummulativeSize=0;
@@ -426,7 +415,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
 		ftr_num = 1;
 		angle_ftr_num = 0;
 		items[0] = interVectors[5];
-		items[1] = interVectors[5];
+		
 		calculateMeans(means, k_temp, ftr_num, items, temp, 10000, tempBelongsTo, tempClusterSizes, minima, maxima, angle_ftr_num);
 		findClusters(means, items, temp, k_temp, ftr_num, tempClusterSizes, tempBelongsTo);
 		best = getBiggestCluster(tempClusterSizes, k_temp);
@@ -447,9 +436,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
 	*numOfMatches = cummulativeSize;
 	copyVectors(vectors, cumulativeVectors, cummulativeSize);
 	items[0] = vectors[5];
-	items[1] = vectors[3];
-	items[2] = vectors[4];
-	items[3] = vectors[5];
+	
 	ftr_num = 1;
 	angle_ftr_num = 0;
 	k = 4;

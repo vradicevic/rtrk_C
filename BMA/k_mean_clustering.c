@@ -195,10 +195,12 @@ float euclideanDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr
 void updateMean(uint16_t clusterSize, float* mean, int16_t** vectors, int v_index, uint8_t ftr_num) {
     volatile int ftr_i;
     float newMean;
+	printf("\none update\n");
     for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
 
         newMean = mean[ftr_i];
         newMean = (newMean * (clusterSize - 1) + (float)vectors[ftr_i][v_index]) / clusterSize;
+		printf("\nMean update %f \n", mean[ftr_i] - newMean);
         mean[ftr_i] = newMean;
     }
 }
@@ -236,7 +238,7 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
     for (i = 0; i < countOfVectors; i++) {
         belongsTo[i] = 0;
     }
-
+	printf("\nStart of iteration\n");
     volatile int noChange = 1;
     for (j = 0; j < maxIterations; j++) {
         noChange = 1;
@@ -247,8 +249,7 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
 
             index = classify(means, vectors, i, k, ftr_num);
 
-            clusterSizes[index] += 1;
-            cSize = clusterSizes[index];
+            
             //if(cSize>countOfVectors){
             //  
             //  if (a)
@@ -258,20 +259,30 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
             //  }
             //  
             //}
+			if (j == 0) {
+				clusterSizes[index] += 1;
+				cSize = clusterSizes[index];
+				updateMean(cSize, *(means + index), vectors, i, ftr_num);
+				noChange = 0;
+			}else if (index != belongsTo[i]) {
+				clusterSizes[index] += 1;
+				cSize = clusterSizes[index];
+				updateMean(cSize, *(means + index), vectors, i, ftr_num);
+				noChange = 0;
+			}
+			
 
-            updateMean(cSize, *(means + index), vectors, i, ftr_num);
 
-
-            if (index != belongsTo[i]) {
-                noChange = 0;
-            }
+            
             belongsTo[i] = (uint8_t)index;
 
         }
+		
         if (noChange) {
             break;
         }
     }
+	printf("\nEnd of iteration\n");
 
 
 }

@@ -2,6 +2,8 @@
 #define _BMA_FLOW_H_
 #define _CRT_SECURE_NO_WARNINGS
 #include "stdint.h"
+#include "main.h"
+
 
 
 

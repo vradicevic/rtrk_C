@@ -1,25 +1,13 @@
 #include "bma_flow.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-
-#include "read_write_utils.h"
-#include "ebma.h"
-#include "tss.h"
-#include "my_bma.h"
-#include "hibrid_bma.h"
 #include "paths.h"
-
 
 int bmaFlow(int step, int16_t** vectors) {
 	Point start, end;
-	clock_t beginClock, endClock;
+	
 	start.x = 0;
 	end.x = WIDTH;
-	start.y = 0;
-	end.y = HEIGHT;
+	start.y = 200;
+	end.y = HEIGHT-200;
 	int ftr_num = 6;
 	int maxMatches = (HEIGHT / BLOCK_SIZE) * (WIDTH / BLOCK_SIZE);
 	uint8_t* image;
@@ -32,10 +20,9 @@ int bmaFlow(int step, int16_t** vectors) {
 	image = readFrameFrom422YUYVVideo(videoPath, WIDTH, HEIGHT, 13);
 	getYComponent_YUV422_YUYV(currFrame, image, WIDTH, HEIGHT);
 	 
-	beginClock = clock();
-	int numMatches = blockMatchingEBMA(vectors, currFrame, prevFrame, step, start, end);
-	endClock = clock();
-	printf("exTime: %lf", (double)(endClock - beginClock)/CLOCKS_PER_SEC);
+	
+	int numMatches = blockMatchingMYBMA(vectors, currFrame, prevFrame, step, start, end);
+	
 	printf("BlockMatching done!\n");
 	return numMatches;
 }
