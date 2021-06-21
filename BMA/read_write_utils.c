@@ -61,7 +61,7 @@ uint8_t* readFrameFrom422YUYVVideo(char* filepath, int width, int height, int fr
     int frameSize = (width * height * 2);
     uint8_t* yuyv = (uint8_t*)malloc(frameSize*sizeof(uint8_t));
     FILE* file = fopen(filepath, "rb");
-    fseek(file, frameNumber * frameSize, 0);
+    fseek(file, frameNumber * frameSize, SEEK_SET);
     fread(yuyv, 1, frameSize, file);
     fclose(file);
     return yuyv;

@@ -12,7 +12,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
 	int saeTresh = 9*BLOCK_SIZE * BLOCK_SIZE;
 
 
-    for (y = start.x; y < end.y; y += BLOCK_SIZE) {
+    for (y = start.y; y < end.y; y += BLOCK_SIZE) {
         for (x = start.x; x <end.x; x += BLOCK_SIZE) {
             prevMacroblockCoo.x = x;
             prevMacroblockCoo.y = y;

@@ -36,7 +36,6 @@ uint8_t calculateVarianceOfAngle(float** means, int16_t** vectors, uint16_t* clu
         }
 
     }
-    printf("Varijanca = %f; ClusterSize: %d; Svi clusteri: %d %d %d %d\n", result, clusterSizes[winner], clusterSizes[0], clusterSizes[1], clusterSizes[2], clusterSizes[3]);
     return winner;
 
 
@@ -179,7 +178,7 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
 
 float euclideanDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr_num) {
     float sum = 0;
-    volatile int ftr_i;
+    uint8_t ftr_i=0;
     for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
         if (ftr_i == FTR_ANGLE) {
             sum += pow(CAST_ANGLE_DIS(abs((int16_t)(mean[ftr_i] - vectors[ftr_i][v_index])) % 360), 2);
@@ -195,12 +194,12 @@ float euclideanDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr
 void updateMean(uint16_t clusterSize, float* mean, int16_t** vectors, int v_index, uint8_t ftr_num) {
     volatile int ftr_i;
     float newMean;
-	printf("\none update\n");
+	
     for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
 
         newMean = mean[ftr_i];
         newMean = (newMean * (clusterSize - 1) + (float)vectors[ftr_i][v_index]) / clusterSize;
-		printf("\nMean update %f \n", mean[ftr_i] - newMean);
+		
         mean[ftr_i] = newMean;
     }
 }
@@ -238,7 +237,7 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
     for (i = 0; i < countOfVectors; i++) {
         belongsTo[i] = 0;
     }
-	printf("\nStart of iteration\n");
+	
     volatile int noChange = 1;
     for (j = 0; j < maxIterations; j++) {
         noChange = 1;
@@ -282,7 +281,7 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
             break;
         }
     }
-	printf("\nEnd of iteration\n");
+	
 
 
 }

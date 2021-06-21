@@ -1,5 +1,15 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include "main.h"
+#include "read_write_utils.h"
+#include "yuv_convert_utils.h"
+#include "tss.h"
+#include "my_bma.h"
+#include "ebma.h"
+#include <time.h>
+#include "vectors_filtering.h"
+#include "hibrid_bma.h"
+//#include "paths.h"
+#include "evaluation_proces.h"
+#include "bma_flow.h"
 
 #define clip_width_start(X) ((X-25)<0?0:(X-25))
 #define clip_width_end(X,Y) ((X+25)>Y?Y:(X+25))
@@ -14,8 +24,8 @@ int main(void) {
 	int framesNum = 5;
 	int ftr_num = 6;
 	uint8_t* yuv444 = (uint8_t*)malloc(3*1280*720);
-	char* vectorsPath = "D:\\vektori\\vectors0.bin";
-	char* belongsToPath = "D:\\vektori\\belongsTo.bin";
+	char* vectorsPath = "H:\\vektori\\vectors0.bin";
+	char* belongsToPath = "H:\\vektori\\belongsTo.bin";
 	uint8_t* yuyv = (uint8_t*)malloc(WIDTH * HEIGHT * 2 * sizeof(uint8_t));
 
 	char imagePath[100];
@@ -23,7 +33,7 @@ int main(void) {
 	FILE* f = fopen(videopath, "rb");
 	//FILE* append = fopen(savePath, "ab");
 	
-	
+	/*
 	
 	for (int i = 0; i < 5; i++) {
 		sprintf(savePath, "D:\\boundedsequence%d.yuv", i);
@@ -37,7 +47,8 @@ int main(void) {
 	
 	fclose(f);
 	getchar();
-	//fclose(append);
+	*/
+	
 
 	
 	/*
@@ -94,15 +105,32 @@ int main(void) {
 	//getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
 	
 	//free(image);
-	/*int16_t** vectors = malloc(ftr_num * sizeof(int16_t*));
+	int16_t** vectors = malloc(ftr_num * sizeof(int16_t*));
 	for (int i = 0; i < ftr_num; i++) {
 		vectors[i] = malloc(1000 * sizeof(int16_t));
 	}
-	int numofmatches = bmaFlow(7,vectors);
+	int16_t** filteredVectors = malloc(ftr_num * sizeof(int16_t*));
+	for (int i = 0; i < ftr_num; i++) {
+		filteredVectors[i] = malloc(1000 * sizeof(int16_t));
+	}
+	
+	ftr_num = 1;
+	
+	uint8_t* belongsTo= (uint8_t*)malloc(1000 * sizeof(uint8_t));
+	int numOfVs = bmaFlow(7, vectors,filteredVectors,belongsTo);
+	ftr_num = 6;
+	
+	
+	
+	
+
+
+	/*
 	vectors = filterByLength(vectors, &numofmatches, ftr_num);
-	uint8_t* belongsTo = filterVectorsFlowMoving(vectors, &numofmatches);
-	saveBelongsTo(belongsToPath, belongsTo, numofmatches);
-	saveVectors(vectorsPath, vectors, numofmatches, ftr_num);*/
+	uint8_t* belongsTo = filterVectorsFlowMoving(vectors, &numofmatches);*/
+
+	saveBelongsTo(belongsToPath, belongsTo, numOfVs);
+	saveVectors(vectorsPath, filteredVectors, numOfVs, ftr_num);
 	
 	//vectors = filterByLength(vectors, &numofmatches, ftr_num);
 	/*
