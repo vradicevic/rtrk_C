@@ -24,8 +24,8 @@ int main(void) {
 	int framesNum = 5;
 	int ftr_num = 6;
 	uint8_t* yuv444 = (uint8_t*)malloc(3*1280*720);
-	char* vectorsPath = "H:\\vektori\\vectors0.bin";
-	char* belongsToPath = "H:\\vektori\\belongsTo.bin";
+	char* vectorsPath = "D:\\vektori\\vectors0.bin";
+	char* belongsToPath = "D:\\vektori\\belongsTo.bin";
 	uint8_t* yuyv = (uint8_t*)malloc(WIDTH * HEIGHT * 2 * sizeof(uint8_t));
 
 	char imagePath[100];
@@ -59,7 +59,6 @@ int main(void) {
 			index++;
 			y[(j * WIDTH) + index] = yuyv[((j * WIDTH) + index) * 2];
 			index++;
-
 		}
 	}
 	saveYComponent(savePath, y, 1280, 720);
@@ -105,7 +104,7 @@ int main(void) {
 	//getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
 	
 	//free(image);
-	int16_t** vectors = malloc(ftr_num * sizeof(int16_t*));
+	/*int16_t** vectors = malloc(ftr_num * sizeof(int16_t*));
 	for (int i = 0; i < ftr_num; i++) {
 		vectors[i] = malloc(1000 * sizeof(int16_t));
 	}
@@ -120,7 +119,7 @@ int main(void) {
 	int numOfVs = bmaFlow(7, vectors,filteredVectors,belongsTo);
 	ftr_num = 6;
 	
-	
+	*/
 	
 	
 
