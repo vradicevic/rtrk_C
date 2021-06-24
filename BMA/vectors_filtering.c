@@ -350,7 +350,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
 	uint8_t* tempBelongsTo;
     float* minima;
     float* maxima;
-    uint8_t k=8;
+    uint8_t k=10;
     int ftr_num=6;
     uint16_t clusterSizes[16];
 	uint16_t tempClusterSizes[16];
@@ -386,7 +386,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
 	}
 
 
-	k = 6;
+	k = 10;
     uint8_t angle_ftr_num = 0;
     ftr_num = 1;
     items[0] =vectors[5];
@@ -447,6 +447,137 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
 }
 
 
+uint8_t* filterVectorsBackSub(int16_t** vectors, int* numOfMatches) {
+
+	int maxMatches = 14400;
+	int cluster_i, cluster_i2;
+	int16_t** items;
+	int16_t** cumulativeVectors;
+	int16_t** interVectors;
+	float** means;
+	uint8_t* belongsTo;
+	uint8_t* tempBelongsTo;
+	float* minima;
+	float* maxima;
+	uint8_t k = 10;
+	int ftr_num = 6;
+	uint16_t clusterSizes[16];
+	uint16_t tempClusterSizes[16];
+	int k_best = 1;
+	float middleVariance_best = 9999;
+	float middleVariance = 0;
+
+
+
+	means = (float**)malloc(k * sizeof(float*));
+	int i;
+	for (i = 0; i < k; i++) {
+		means[i] = (float*)malloc(ftr_num * sizeof(float));
+
+	}
+
+	belongsTo = (uint8_t*)malloc(maxMatches * sizeof(uint8_t));
+	tempBelongsTo = (uint8_t*)malloc(maxMatches * sizeof(uint8_t));
+
+
+	minima = (float*)malloc(ftr_num * sizeof(float));
+
+
+	maxima = (float*)malloc(ftr_num * sizeof(float));
+
+
+	items = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
+
+
+	interVectors = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
+
+	for (i = 0; i < 6; i++) {
+		interVectors[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
+	}
+	cumulativeVectors = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
+
+	for (i = 0; i < ftr_num; i++) {
+		cumulativeVectors[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
+	}
+
+
+	k = 10;
+	uint8_t angle_ftr_num = 0;
+	ftr_num = 1;
+	items[0] = vectors[5];
+	angle_ftr_num = 5;
+	ftr_num = 6;
+	items[0] = vectors[0];
+	items[1] = vectors[1];
+	items[2] = vectors[2];
+	items[3] = vectors[3];
+	items[4] = vectors[4];
+	items[5] = vectors[5];
+	int k_max = 10;
+	for (k = 1; k <= k_max; k++) {
+		calculateMeans(means, k, ftr_num/*ftr_num*/, items, *numOfMatches, 1000, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
+		findClusters(means, items, *numOfMatches, k, ftr_num/*ftr_num*/, clusterSizes, belongsTo);
+		middleVariance = calculateMiddleVarianceAngle(vectors, *numOfMatches, belongsTo, clusterSizes, means, k, *numOfMatches);
+		if (middleVariance < middleVariance_best) {
+			middleVariance_best = middleVariance;
+			k_best = k;
+		}
+	}
+	k = k_best;
+	printf("\nBest k = %d", k);
+	calculateMeans(means, k, ftr_num, items, *numOfMatches, 1000, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
+	findClusters(means, items, *numOfMatches, k, ftr_num, clusterSizes, belongsTo);
+	copyBelongsTo(belongsTo, tempBelongsTo, *numOfMatches);
+	copyClusterSizes(clusterSizes, tempClusterSizes, k);
+	//printf("\nCluster sizes: %d; %d; %d; %d;\n", clusterSizes[0], clusterSizes[1], clusterSizes[2], clusterSizes[3]);
+	ftr_num = 6;
+
+	int temp, k_temp = k, best, cummulativeSize = 0;
+	//get2Max(clusterSizes, &cluster_i, &cluster_i2, &k);
+	for (int i = 0; i < k; i++) {
+		temp = *numOfMatches;
+		ftr_num = 6;
+		copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, i, temp, 0);
+		temp = clusterSizes[i];
+		k_temp = 2;
+		ftr_num = 1;
+		angle_ftr_num = 3;
+		items[0] = interVectors[4];
+
+		calculateMeans(means, k_temp, ftr_num, items, temp, 10000, tempBelongsTo, tempClusterSizes, minima, maxima, angle_ftr_num);
+		findClusters(means, items, temp, k_temp, ftr_num, tempClusterSizes, tempBelongsTo);
+		best = getBiggestCluster(tempClusterSizes, k_temp);
+		//copyCluster(interVectors, interVectors, tempClusterSizes, tempBelongsTo, 6, best, temp, 0);
+		
+		//temp = tempClusterSizes[best];
+		//items[0] = interVectors[4];
+		//angle_ftr_num = 1;
+		//calculateMeans(means, k_temp, ftr_num, items, temp, 10000, tempBelongsTo, tempClusterSizes, minima, maxima, angle_ftr_num);
+		//findClusters(means, items, temp, k_temp, ftr_num, tempClusterSizes, tempBelongsTo);
+		//best = getBestClusterByLength(means, 0, k_temp);
+		copyCluster(interVectors, cumulativeVectors, tempClusterSizes, tempBelongsTo, 6, best, temp, cummulativeSize);
+
+		cummulativeSize += tempClusterSizes[best];
+		//printf("\nVarijanca klaster: %f\n", calculateVariance(interVectors[5], means[best][5], tempClusterSizes[best], 1));
+
+	}
+	*numOfMatches = cummulativeSize;
+	copyVectors(vectors, cumulativeVectors, cummulativeSize);
+	items[0] = vectors[5];
+
+	ftr_num = 1;
+	angle_ftr_num = 0;
+	k = k_best;
+
+	calculateMeans(means, k, ftr_num, items, *numOfMatches, 10000, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
+	findClusters(means, items, *numOfMatches, k, ftr_num, clusterSizes, belongsTo);
+
+
+	return belongsTo;
+
+}
+
+
 float calculateMiddleVarianceAngle(int16_t** vectors, int numOfVectors, uint8_t* belongsTo, uint16_t* clusterSizes, float** means, int k,int ftr_angle) {
 	int variance[10];
 	float sumVariance=0;
@@ -472,7 +603,7 @@ uint8_t* groupVectors(int16_t** vectors, uint8_t* belongsTo, int numOfVectors, i
 	float* minima, *maxima;
 	uint16_t clusterSizes[10];
 
-	int k_best = 0;
+	int k_best = 1;
 	float middleVariance_best = 9999;
 	float middleVariance = 0;
 	int ftr_num = 6;
@@ -499,7 +630,7 @@ uint8_t* groupVectors(int16_t** vectors, uint8_t* belongsTo, int numOfVectors, i
 	items[1] = vectors[1];
 	items[2] = vectors[2];
 	items[3] = vectors[3];
-	items[4] = vectors[4];
+	items[4] = vectors[5];
 	items[5] = vectors[5];
 	
 	for (k = 1; k <= k_max; k++) {
@@ -512,6 +643,7 @@ uint8_t* groupVectors(int16_t** vectors, uint8_t* belongsTo, int numOfVectors, i
 		}
 	}
 	k = k_best;
+	printf("\nBest k = %d", k);
 	calculateMeans(means, k, ftr_num, items, numOfVectors, 100, belongsTo, clusterSizes, minima, maxima, ftr_angle);
 	findClusters(means, items, numOfVectors, k, ftr_num, clusterSizes, belongsTo);
 

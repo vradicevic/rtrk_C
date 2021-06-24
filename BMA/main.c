@@ -104,7 +104,7 @@ int main(void) {
 	//getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
 	
 	//free(image);
-	/*int16_t** vectors = malloc(ftr_num * sizeof(int16_t*));
+	int16_t** vectors = malloc(ftr_num * sizeof(int16_t*));
 	for (int i = 0; i < ftr_num; i++) {
 		vectors[i] = malloc(1000 * sizeof(int16_t));
 	}
@@ -114,12 +114,14 @@ int main(void) {
 	}
 	
 	ftr_num = 1;
+	int numOfVs;
+	uint8_t* belongsTo= bmaFlow(7, vectors, filteredVectors,&numOfVs);
 	
-	uint8_t* belongsTo= (uint8_t*)malloc(1000 * sizeof(uint8_t));
-	int numOfVs = bmaFlow(7, vectors,filteredVectors,belongsTo);
 	ftr_num = 6;
+	for (int i = 0; i < 0; i++) {
+		printf("nula");
+	}
 	
-	*/
 	
 	
 

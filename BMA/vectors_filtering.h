@@ -24,7 +24,7 @@ int getBestKByLengthMean(int16_t* lengths, int k, uint8_t* belongsTo, uint16_t* 
 uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches);
 
 uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches);
-
+uint8_t* filterVectorsBackSub(int16_t** vectors, int* numOfMatches);
 uint8_t* filterVectorsFlowTest(int16_t** vectors, int* numOfMatches);
 
 void copyBelongsTo(uint8_t* src, uint8_t* dest, int count);

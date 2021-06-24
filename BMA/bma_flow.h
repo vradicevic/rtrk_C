@@ -7,7 +7,7 @@
 
 
 
-int bmaFlow(int step, int16_t** vectors, int16_t** filteredVectors, uint8_t* belongsTo);
+uint8_t* bmaFlow(int step, int16_t** vectors, int16_t** filteredVectors, int* numOfVs);
 
 
 
