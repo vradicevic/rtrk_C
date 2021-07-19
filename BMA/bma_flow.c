@@ -15,7 +15,7 @@ uint8_t* bmaFlow(int step, int16_t** vectors, int16_t** filteredVectors, int* nu
 	uint8_t* image;
 	uint8_t* prevFrame = (uint8_t*)malloc(WIDTH * HEIGHT * sizeof(uint8_t));
 	uint8_t* currFrame= (uint8_t*)malloc(WIDTH * HEIGHT * sizeof(uint8_t));
-	char* videoPath = videoMovingDashboard30FPS;
+	char* videoPath = "D:\\nesto";
 
 	image = readFrameFrom422YUYVVideo(videoPath, WIDTH, HEIGHT,22);
 

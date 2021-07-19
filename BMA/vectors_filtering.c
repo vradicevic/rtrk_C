@@ -44,10 +44,10 @@ int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int* numO
 
 	
 	int index = 0;
-	for (int i = 0; i < *numOfMatches; i++) {
-		if (vectors[4][i] > 2 && vectors[4][i]< 50) {
+	for (int o = 0; o < *numOfMatches; o++) {
+		if (vectors[4][o] > 2 && vectors[4][o]< 50) {
 			for (int j = 0; j < ftr_num; j++) {
-				filteredVectors[j][index] = vectors[j][i];
+				filteredVectors[j][index] = vectors[j][o];
 			}
 			index++;
 		}

@@ -47,6 +47,7 @@ int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
                 vectors[2][index] = (int16_t)privTo.x;
                 vectors[3][index] = (int16_t)privTo.y;
                 vectors[4][index] = (int16_t)length;
+                
                 vectors[5][index] = (int16_t)CAST_ANGLE(calculateAngle2Points(privTo, privFrom));
                 index++;
            

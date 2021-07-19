@@ -6,8 +6,8 @@ int blockMatchingTSS(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFram
     int index = 0;
 
 
-    for (y =200; y < HEIGHT - (HEIGHT % BLOCK_SIZE)-200; y += BLOCK_SIZE) {
-        for (x = 0; x < WIDTH - ((WIDTH % BLOCK_SIZE)); x += BLOCK_SIZE) {
+    for (y =start.y; y < end.y; y += BLOCK_SIZE) {
+        for (x = start.x; x <end.x; x += BLOCK_SIZE) {
             prevMacroblockCoo.x = x;
             prevMacroblockCoo.y = y;
             prevMacroblockCoo = getCenter(prevMacroblockCoo);
