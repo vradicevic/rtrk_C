@@ -27,3 +27,5 @@
 *.sqlite/
 
 BMA/paths.h
+BMA/x64/Debug/vc142.idb
+*.idb

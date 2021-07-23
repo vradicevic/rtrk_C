@@ -9,6 +9,6 @@
 
 uint8_t* bmaFlow(int step, int16_t** vectors, int16_t** filteredVectors, int* numOfVs);
 
-
+void mainDummyEval(void);
 
 #endif

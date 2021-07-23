@@ -14,18 +14,28 @@
 #define clip_width_start(X) ((X-25)<0?0:(X-25))
 #define clip_width_end(X,Y) ((X+25)>Y?Y:(X+25))
 
+#include <time.h>
+
+
+
 int main(void) {
-	char* videopath = "C:\\Videosekvence\\dummy_sekvenca.yuv";//"F:\\odabrani_mirna_centerYUYV.yuv"
+	clock_t startTime, endTime;
+	int cpuTime;
+
+	char* videopath = "D:\\Videosekvence\\yuv\\odabrani final\\finalfinal\\slijedniKamion.yuv";
 	
-	char* movingPairPath = "D:\\test0.yuv";
+	int frameSize = WIDTH * HEIGHT*2;
 	
 	char savePath[100];
 	int frames[] = { 1,5,7,11,19,25 };
 	int framesNum = 5;
 	int ftr_num = 6;
 	uint8_t* yuv444 = (uint8_t*)malloc(3*1280*720);
-	char* vectorsPath = "C:\\Dummy evaluacija\\1280x720\\Vektori\\";
+	char* vectorsPath = "D:\\Videosekvence\\Dummy evaluacija\\1280x720\\Vektori\\";
 	char* belongsToPath = "C:\\Dummy evaluacija\\BelongsTo\\";
+
+	char* logPath = "D:\\logovi\\PC\\1280x720\\NOOPTI\\";
+
 	int steps[3] = { 15,25,35 };
 	char directions[8][15] = { "Right","Down","DownRight","Left","Up","UpLeft","UpRight","DownLeft" };
 	char objects[3][10] = { "128x72","256x144","512x288" };
@@ -40,110 +50,91 @@ int main(void) {
 	for (int i = 0; i < ftr_num; i++) {
 		filteredVectors[i] = malloc(1000 * sizeof(int16_t));
 	}
-	char imagePath[100];
+	char log[100];
 	volatile int numOfVs=0;
+	Point start = (Point) { .x = 0, .y = 0 };
+	Point end = (Point) { .x = 1280, .y = 720 };
+
 	FILE* f = fopen(videopath, "rb");
-	for (int j = 0; j < 3; j++) {
-		for (int z = 0; z < 3; z++) {
-			for (int i = 0; i < 8; i++) {
-				fread(yuyv, (WIDTH * HEIGHT * 2), 1, f);
-				getYComponent_YUV422_YUYV(prevY, yuyv, WIDTH, HEIGHT);
-				fread(yuyv, (WIDTH * HEIGHT * 2), 1, f);
-				getYComponent_YUV422_YUYV(currY, yuyv, WIDTH, HEIGHT);
-				/*numOfVs = blockMatchingEBMA(vectors, currY, prevY, 15, (Point) { .x = 0, .y = 0 }, (Point) { .x = WIDTH, .y = HEIGHT });
+	
+	
+	int EoF;
 
-				filterByLength(vectors, filteredVectors, &numOfVs, 6);
-				printf("num of vs: %d", numOfVs);
-				sprintf(savePath, "%sEBMA_%s_%s_Step=%d.bin", vectorsPath, objects[j], directions[i],steps[z]);
-				printf("Save path %s", savePath);
-				saveVectors(savePath, filteredVectors, numOfVs, 6);
-				numOfVs = blockMatchingMYBMA(vectors, currY, prevY, 4, (Point) { .x = 0, .y = 0 }, (Point) { .x = WIDTH, .y = HEIGHT });
-				filterByLength(vectors, filteredVectors, &numOfVs, 6);
-				sprintf(savePath, "%sMYBMA_%s_%s_Step=%d.bin", vectorsPath, objects[j], directions[i], steps[z]);
-				saveVectors(savePath, filteredVectors, numOfVs, 6);*/
-				numOfVs = blockMatchingTSS(vectors, currY, prevY, 15, (Point) { .x = 0, .y = 0 }, (Point) { .x = WIDTH, .y = HEIGHT });
-				filterByLength(vectors, filteredVectors, &numOfVs, 6);
-				sprintf(savePath, "%sTSS_%s_%s_Step=%d.bin", vectorsPath, objects[j], directions[i], steps[z]);
-				saveVectors(savePath, filteredVectors, numOfVs, 6);
+	/*	
+	//neslijedni
+	for (int i = 0; i < 20; i++) {
+		startTime = clock();
+		EoF = fread(yuyv, 1, frameSize, f);
+		if (EoF == 0) break;
+		getYComponent_YUV422_YUYV(prevY, yuyv, WIDTH, HEIGHT);
+		fread(yuyv, 1, frameSize, f);
+		getYComponent_YUV422_YUYV(currY, yuyv, WIDTH, HEIGHT);
 
-			}
-		}
+		blockMatchingEBMA(vectors, currY, prevY, 25, start, end);
+		endTime = clock();
+		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
+		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
+		appendLog("D:\\logovi\\PC\\1280x720\\NOOPTI\\EBMA_movingDashboard_block=32.log", log);
 		
-	}
-	fclose(f);
-	//FILE* append = fopen(savePath, "ab");
-	
-	/*
-	
-	for (int i = 0; i < 5; i++) {
-		sprintf(savePath, "D:\\boundedsequence%d.yuv", i);
-		fread(yuyv, (1280 * 720 * 2), 1, f);
-		appendFrameToYUYVFile(savePath, yuyv, 1280, 720);
-		fread(yuyv, (1280 * 720 * 2), 1, f);
-		appendFrameToYUYVFile(savePath, yuyv, 1280, 720);
+		startTime = clock();
+		blockMatchingTSS(vectors, currY, prevY, 7, start, end);
+		endTime = clock();
+		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
+		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
+		appendLog("D:\\logovi\\PC\\1280x720\\NOOPTI\\TSS_dummy_block=32.log", log);
+
+		startTime = clock();
+		blockMatchingMYBMA(vectors, currY, prevY, 4, start, end);
+		endTime = clock();
+
+		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
+		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
+		appendLog("D:\\logovi\\PC\\1280x720\\NOOPTI\\MYBMA_dummy_block=32.log", log);
+		
 		
 
 	}
-	
-	fclose(f);
-	getchar();
 	*/
 	
 
 	
-	/*
-	for (int j = 150; j < 570; j++) {
-		index = startIndex;
-		for (int i = startIndex; i < endIndex; i += 2) {
-			y[(j * WIDTH) + index] = yuyv[((j * WIDTH) + index) * 2];
-			index++;
-			y[(j * WIDTH) + index] = yuyv[((j * WIDTH) + index) * 2];
-			index++;
-		}
+	uint8_t* temp;
+	//slijedni
+	fread(yuyv, 1, frameSize, f);
+	getYComponent_YUV422_YUYV(prevY, yuyv, WIDTH, HEIGHT);
+	for (int i = 0; i < 39; i++) {
+		startTime = clock();
+		EoF = fread(yuyv, 1, frameSize, f);
+		if (EoF == 0) break;
+		getYComponent_YUV422_YUYV(currY, yuyv, WIDTH, HEIGHT);
+		printf("Framsz: %d", EoF / frameSize);
+
+		blockMatchingEBMA(vectors, currY, prevY, 25, start, end);
+		endTime = clock();
+		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
+		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
+		appendLog("D:\\logovi\\PC\\1280x720\\NOOPTI\\EBMA_slijedniKamion_block=32.log", log);
+		/*
+		startTime = clock();
+		blockMatchingTSS(vectors, currY, prevY, 7, start, end);
+		endTime = clock();
+		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
+		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
+		appendLog("D:\\logovi\\PC\\1280x720\\NOOPTI\\TSS_slijedniKamion_block=32.log", log);
+
+		startTime = clock();
+		blockMatchingMYBMA(vectors, currY, prevY, 4, start, end);
+		endTime = clock();
+
+		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
+		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
+		appendLog("D:\\logovi\\PC\\1280x720\\NOOPTI\\MYBMA_slijedniKamion_block=32.log", log);
+		*/
+		temp = prevY;
+		prevY = currY;
+		currY = temp;
+
 	}
-	saveYComponent(savePath, y, 1280, 720);
-	free(y);
-	y = malloc(1280 * 720);
-	startIndex = clip_width_start(640);
-	endIndex = clip_width_end(1280, 1280);
-	for (int j = 150; j < 570; j++) {
-		index = startIndex;
-		for (int i = startIndex; i < endIndex; i += 2) {
-			y[(j * WIDTH) + index] = yuyv[((j * WIDTH) + index) * 2];
-			index++;
-			y[(j * WIDTH) + index] = yuyv[((j * WIDTH) + index) * 2];
-			index++;
-
-		}
-	}
-	appendYComponent(savePath, y, 1280, 720);
-	
-
-	
-	*/
-
-
-	/*
-	uint8_t* currframey=(uint8_t*)malloc(WIDTH*HEIGHT*2);
-	uint8_t* prevframey= (uint8_t*)malloc(WIDTH * HEIGHT * 2);
-	uint8_t* image;
-	int iteration = 20;*/
-	/*for (int i = 0; i < iteration; i+=2) {
-		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, i);
-		sprintf(imagePath, "D:\\Videosekvence\\slike\\tests\\test%d.yuv", i);
-		appendFrameToYUYVFile(imagePath, image, WIDTH, HEIGHT);
-		free(image);
-		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, i+1);
-		appendFrameToYUYVFile(imagePath, image, WIDTH, HEIGHT);
-		free(image);
-
-	}*/
-	
-
-	
-	//getYComponent_YUV422_YUYV(currframey, image, WIDTH, HEIGHT);
-	
-	//free(image);
 	
 	
 	
@@ -154,20 +145,7 @@ int main(void) {
 	
 
 
-	/*
-	vectors = filterByLength(vectors, &numofmatches, ftr_num);
-	uint8_t* belongsTo = filterVectorsFlowMoving(vectors, &numofmatches);*/
-
 	
-	
-	//vectors = filterByLength(vectors, &numofmatches, ftr_num);
-	/*
-	uint8_t* belongsTo = filterVectorsFlowSimple(vectors, &numofmatches);
-	
-	
-	saveBelongsTo(belongsToPath,belongsTo,numofmatches);*/
-	//evaluate(dataFolder, resultsFolder, vectors);
-	//saveVectors(vectorsPa, vectors, numofmatches, ftr_num);
 	
 	return 0;
 	

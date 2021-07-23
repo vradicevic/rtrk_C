@@ -147,3 +147,11 @@ void appendYComponent(char* filepath, uint8_t* buffY, int width, int height) {
     fclose(file);
     printf("\nSave Y done!");
 }
+
+
+void appendLog(char* filePath,char* log) {
+	FILE* fileAppend = fopen(filePath, "a");
+	fprintf(fileAppend, log);
+	fclose(fileAppend);
+	printf("\nLogSaved");
+}

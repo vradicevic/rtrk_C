@@ -39,4 +39,6 @@ void saveYComponent(char* filepath, uint8_t* buffY, int width, int height);
 
 void appendYComponent(char* filepath, uint8_t* buffY, int width, int height);
 
+void appendLog(char* filePath, char* log);
+
 #endif

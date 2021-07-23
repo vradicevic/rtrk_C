@@ -6,7 +6,7 @@ int blockMatchingTSS(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFram
     int index = 0;
 
 
-    for (y =start.y; y < end.y; y += BLOCK_SIZE) {
+    for (y =start.y; y < (end.y - (end.y % BLOCK_SIZE)); y += BLOCK_SIZE) {
         for (x = start.x; x <end.x; x += BLOCK_SIZE) {
             prevMacroblockCoo.x = x;
             prevMacroblockCoo.y = y;
@@ -64,7 +64,7 @@ Point getBestMatchTSS(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* p
     points[0] = getCenter(prevMacroblockCoo);
 
 
-    float minMad = 99999.999;
+    float minMad = 9999.99;
     float MAD;
     best = points[0];
     int i;
@@ -92,7 +92,7 @@ Point getBestMatchTSS(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* p
 
             MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
 
-            if (MAD < minMad) {
+            if (MAD <minMad) {
                 
                 minMad = MAD;
                 best = points[i];
@@ -110,7 +110,7 @@ Point getBestMatchTSS(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* p
 
     ///////// vracanje na gornji lijevi ugao makrobloka
     best = getUpperLeft(best);
-    if (minMad > 9.00) {
+    if (minMad > 9.0) {
         best = prevMacroblockCoo;
     }
     return best;
