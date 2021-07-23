@@ -4,7 +4,7 @@
 int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFrame, int searchArea, Point start, Point end) {
     Point prevMacroblockCoo;
     int deviation, x, y;
-	float madTreshold = 9.0;
+	int saeTreshold = 9*BLOCK_ELEMENTS;
     Point privFrom, privTo;
     
 
@@ -30,7 +30,7 @@ int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
                 //float varin = ((float)deviation)/(BLOCK_SIZE*BLOCK_SIZE);
                 //Vps_printf("Variance deviation %f", varin);
                 
-                privTo = getBestMatchEBMA(prevMacroblockCoo, currentFrame, prevFrame, searchArea, madTreshold);
+                privTo = getBestMatchEBMA(prevMacroblockCoo, currentFrame, prevFrame, searchArea, saeTreshold);
                 
 
 
@@ -64,7 +64,7 @@ int blockMatchingEBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFra
 
 }
 
-Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int searchArea,float madTreshold) {
+Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int searchArea,int saeTreshold) {
     Point best;
     Point pointsSA[2];
     
@@ -72,20 +72,20 @@ Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* 
     Point currentMacroblockCoo;
     int x, y;
     
-	float MAD = 0;
-	float minMad = 9999.99;
+	int SAE = 0;
+	int minSae = 99999;
 
     best = prevMacroblockCoo;
 
     currentMacroblockCoo.x = prevMacroblockCoo.x;
     currentMacroblockCoo.y = prevMacroblockCoo.y;
-    //MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
+    //SAE = calculateSAE(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
     
-	MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
+	SAE = calculateSAE(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
     
-    if (MAD < minMad) {
-        //minMad = MAD;
-		minMad = MAD;
+    if (SAE < minSae) {
+        //minSae = SAE;
+		minSae = SAE;
         best = currentMacroblockCoo;
     }
     
@@ -95,12 +95,12 @@ Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* 
             currentMacroblockCoo.x = x;
             currentMacroblockCoo.y = y;
 
-            //MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
-			MAD = calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
-			if (MAD < minMad) {
-                //minMad = MAD;
-				//printf("MIN MAD = %d\n", MAD);
-				minMad = MAD;
+            //SAE = calculateSAE(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
+			SAE = calculateSAE(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
+			if (SAE < minSae) {
+                //minSae = SAE;
+				//printf("MIN SAE = %d\n", SAE);
+				minSae = SAE;
                 best = currentMacroblockCoo;
             }
             
@@ -109,7 +109,7 @@ Point getBestMatchEBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* 
 
     }
     
-    if (minMad >= madTreshold) {
+    if (minSae >= saeTreshold) {
         best = prevMacroblockCoo;
 	}
 	

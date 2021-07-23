@@ -5,6 +5,6 @@
 
 
 int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFrame, int step, Point start, Point end);
-Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int stepOrig, Point predicted, float madTresh);
+Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int stepOrig, Point predicted, int saeTresh);
 
 #endif

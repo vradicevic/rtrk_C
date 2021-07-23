@@ -19,15 +19,15 @@ int blockValueDeviation(uint8_t* frame, Point upperLeftMacroblockCoo) {
     
     int y, x;
     for (y = 0; y < BLOCK_SIZE; y++) {
-        for (x = 0; x < BLOCK_SIZE; x++) {
+        for (x = 0; x < BLOCK_SIZE; x+=4) {
             sum1 = sum1 + frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x)];
-			/*sum2 = sum2 + frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+1)];
+			sum2 = sum2 + frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+1)];
 			sum3 = sum3 + frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+2)];
-			sum4 = sum4 + frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+3)];*/
+			sum4 = sum4 + frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+3)];
 
         }
     }
-	/*sum1 = (sum1 + sum2) + (sum3 + sum4);*/
+	sum1 = (sum1 + sum2) + (sum3 + sum4);
     int mean = sum1 / (BLOCK_SIZE * BLOCK_SIZE);
     
     sum1 = 0;
@@ -35,15 +35,15 @@ int blockValueDeviation(uint8_t* frame, Point upperLeftMacroblockCoo) {
 	sum3 = 0;
 	sum4 = 0;
     for (y = 0; y < BLOCK_SIZE; y++) {
-        for (x = 0; x < BLOCK_SIZE; x++) {
+        for (x = 0; x < BLOCK_SIZE; x+=4) {
             sum1 += abs(mean - frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x)]);
-			/*sum2 += abs(mean - frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+1)]);
+			sum2 += abs(mean - frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+1)]);
 			sum3 += abs(mean - frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+2)]);
-			sum4 += abs(mean - frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+3)]);*/
+			sum4 += abs(mean - frame[((y + upperLeftMacroblockCoo.y) * WIDTH) + (x + upperLeftMacroblockCoo.x+3)]);
         }
     }
 
-    return sum1;
+    return (sum1 + sum2) + (sum3 + sum4);
 }
 int getMedianOfBlock(uint8_t* frame, Point upperLeftMacroblockCoo) {
     int n = BLOCK_SIZE * BLOCK_SIZE;

@@ -9,7 +9,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
     Point privFrom, privTo;
     int index = 0;
     Point predicted;
-	int madTresh = 9.0;
+	int saeTresh = 9*BLOCK_ELEMENTS;
 
 
     for (y = start.y; y < (end.y-(end.y% BLOCK_SIZE)); y += BLOCK_SIZE) {
@@ -40,7 +40,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
                     predicted = prevMacroblockCoo;
                 }
 
-                privTo = getBestMatchMYBMA(prevMacroblockCoo, currentFrame, prevFrame, step, predicted,madTresh);
+                privTo = getBestMatchMYBMA(prevMacroblockCoo, currentFrame, prevFrame, step, predicted,saeTresh);
 
 
             }
@@ -71,7 +71,7 @@ int blockMatchingMYBMA(int16_t** vectors, uint8_t* currentFrame, uint8_t* prevFr
 
 }
 
-Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int stepOrig,Point predicted,float madTresh) {
+Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t* prevFrame, int stepOrig,Point predicted,int saeTresh) {
     Point best;
     Point points[9];
     Point currentMacroblockCoo;
@@ -82,8 +82,8 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
     points[0] = getCenter(predicted);
     int idBest=0;
 
-    float minMad = 99999.9;
-    float MAD = 0;
+    int minSae = 99999;
+    int SAE = 0;
     best = points[0];
     int i;
     
@@ -115,11 +115,11 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
             if (!skips[i]) {
                 currentMacroblockCoo = getUpperLeft(points[i]);
 
-                MAD =calculateMAD(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
+                SAE =calculateSAE(currentFrame, prevFrame, currentMacroblockCoo, prevMacroblockCoo);
                 
-                if (MAD < minMad) {
-                    //printf("Iteration:%d \tMAD: %f\n", iteration, MAD);
-					minMad = MAD;
+                if (SAE < minSae) {
+                    //printf("Iteration:%d \tSAE: %f\n", iteration, SAE);
+					minSae = SAE;
                     best = points[i];
                     idBest = i;
 
@@ -128,7 +128,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
            
 
         }
-        //printf("Iteration:%d \tMAD: %f\n", iteration, minMad);
+        //printf("Iteration:%d \tSAE: %f\n", iteration, minSae);
         
         points[0] = best;
         skips[0] = 1;
@@ -246,7 +246,7 @@ Point getBestMatchMYBMA(Point prevMacroblockCoo, uint8_t* currentFrame, uint8_t*
     ///////// vracanje na gornji lijevi ugao makrobloka
     
     best = getUpperLeft(best);
-    if (minMad > madTresh) {
+    if (minSae > saeTresh) {
         best = prevMacroblockCoo;
     }
     return best;
