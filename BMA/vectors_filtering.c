@@ -654,3 +654,80 @@ uint8_t* groupVectors(int16_t** vectors, uint8_t* belongsTo, int numOfVectors, i
 
 
 }
+
+
+uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
+
+	int maxMatches = 14400;
+	int cluster_i, cluster_i2;
+	int16_t** items;
+	int16_t** cumulativeVectors;
+	int16_t** interVectors;
+	float** means;
+	uint8_t* belongsTo;
+	uint8_t* tempBelongsTo;
+	float* minima;
+	float* maxima;
+	uint8_t k = 10;
+	int ftr_num = 6;
+	int tempNumOfVs = 0;
+	uint16_t clusterSizes[16];
+	uint16_t tempClusterSizes[16];
+	uint8_t angle_ftr_num;
+	means = (float**)malloc(k * sizeof(float*));
+	volatile int i;
+	for (i = 0; i < k; i++) {
+		means[i] = (float*)malloc(ftr_num * sizeof(float));
+
+	}
+
+	belongsTo = (uint8_t*)malloc(maxMatches * sizeof(uint8_t));
+	tempBelongsTo = (uint8_t*)malloc(maxMatches * sizeof(uint8_t));
+
+
+	minima = (float*)malloc(ftr_num * sizeof(float));
+
+
+	maxima = (float*)malloc(ftr_num * sizeof(float));
+
+
+	items = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
+
+
+	interVectors = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
+
+	for (i = 0; i < 6; i++) {
+		interVectors[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
+	}
+	cumulativeVectors = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
+	
+	for (i = 0; i < ftr_num; i++) {
+		cumulativeVectors[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
+	}
+
+	//Grupiraj prema kutu i duljini
+	k = 2;
+	
+	ftr_num = 3;
+	items[0] = vectors[0];
+	items[1] = vectors[1];
+	
+	items[4] = vectors[4];
+	angle_ftr_num = 5;
+
+	calculateMeans(means, k, ftr_num, items, *numOfMatches, 25, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
+	findClusters(means, items, *numOfMatches, k, ftr_num, clusterSizes, belongsTo);
+	
+	//printf("\nCluster sizes: %d; %d; %d; %d;\n", clusterSizes[0], clusterSizes[1], clusterSizes[2], clusterSizes[3]);
+	ftr_num = 6;
+	//ispitivanje centroida kuta, ukoliko se razlikuju za manje od 10 stupnjeva smatraj ih istim centroidom
+	
+	
+
+	//Grupiraj svaki klaster u dva klastera po lokaciji, ukoliko su im centroidi blizu ( recimo udaljeni manje od 1/4 elemenata slike 
+
+
+
+	return belongsTo;
+
+}

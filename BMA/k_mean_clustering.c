@@ -176,6 +176,18 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
 
 }
 
+float minkowskiDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr_num) {
+	float r=3;
+	float sum = 0;
+	uint8_t ftr_i = 0;
+	for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
+		sum += pow(abs(vectors[ftr_i][v_index] - mean[ftr_i]), r);
+	}
+	return pow(sum, 1.0 / r);
+}
+
+
+
 float euclideanDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr_num) {
     float sum = 0;
     uint8_t ftr_i=0;
@@ -210,12 +222,16 @@ int classify(float** means, int16_t** vectors, int v_index, uint8_t k, uint8_t f
     volatile int i;
     float dis;
     for (i = 0; i < k; i++) {
-        dis = euclideanDistance(vectors, v_index, *(means + i), ftr_num);
+        dis = minkowskiDistance(vectors, v_index, *(means + i), ftr_num);
+
         if (dis < minimum) {
             minimum = dis;
             index = i;
         }
     }
+	if (index < 0) {
+		printf("index je manji od nula");
+	}
     //Vps_printf("Index = %d",index);
     return index;
 
@@ -261,6 +277,7 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
 			if (j == 0) {
 				clusterSizes[index] += 1;
 				cSize = clusterSizes[index];
+
 				updateMean(cSize, *(means + index), vectors, i, ftr_num);
 				noChange = 0;
 			}else if (index != belongsTo[i]) {

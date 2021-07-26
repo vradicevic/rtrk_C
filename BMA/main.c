@@ -22,7 +22,7 @@ int main(void) {
 	clock_t startTime, endTime;
 	int cpuTime;
 
-	char* videopath = "D:\\Videosekvence\\yuv\\odabrani final\\finalfinal\\slijedniAuto.yuv";
+	char* videopath = "D:\\Videosekvence\\yuv\\odabrani final\\finalfinal\\mirna.yuv";
 	
 	int frameSize = WIDTH * HEIGHT*2;
 	
@@ -30,11 +30,12 @@ int main(void) {
 	int frames[] = { 1,5,7,11,19,25 };
 	int framesNum = 5;
 	int ftr_num = 6;
+	uint8_t* belongsTo;
 	uint8_t* yuv444 = (uint8_t*)malloc(3*1280*720);
-	char* vectorsPath = "D:\\Videosekvence\\Dummy evaluacija\\1280x720\\Vektori\\";
-	char* belongsToPath = "C:\\Dummy evaluacija\\BelongsTo\\";
+	char* vectorsPath = "D:\\vektori\\vectors.bin";
+	char* belongsToPath = "D:\\vektori\\belongsTo.bin";
 
-	char* logPath = "D:\\logovi\\PC\\1280x720\\OPTI\\";
+	char* logPath = "D:\\logovi\\PC\\640x360\\Block=16\\OPTI\\";
 
 	int steps[3] = { 15,25,35 };
 	char directions[8][15] = { "Right","Down","DownRight","Left","Up","UpLeft","UpRight","DownLeft" };
@@ -54,97 +55,26 @@ int main(void) {
 	volatile int numOfVs=0;
 	Point start = (Point) { .x = 0, .y = 200 };
 	Point end = (Point) { .x = 1280, .y = 520 };
-
-	FILE* f = fopen(videopath, "rb");
-	
-	
 	int EoF;
+	uint8_t* image;
 
-	/*	
-	//neslijedni
-	for (int i = 0; i < 20; i++) {
-		startTime = clock();
-		EoF = fread(yuyv, 1, frameSize, f);
-		if (EoF == 0) break;
-		getYComponent_YUV422_YUYV(prevY, yuyv, WIDTH, HEIGHT);
-		fread(yuyv, 1, frameSize, f);
-		getYComponent_YUV422_YUYV(currY, yuyv, WIDTH, HEIGHT);
 
-		blockMatchingEBMA(vectors, currY, prevY, 25, start, end);
-		endTime = clock();
-		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
-		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
-		appendLog("D:\\logovi\\PC\\1280x720\\OPTI\\EBMA_movingDashboard_block=32.log", log);
-		
-		startTime = clock();
-		blockMatchingTSS(vectors, currY, prevY, 7, start, end);
-		endTime = clock();
-		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
-		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
-		appendLog("D:\\logovi\\PC\\1280x720\\OPTI\\TSS_dummy_block=32.log", log);
+	for (int z = 0; z < 40; z += 2) {
+		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, z);
+		getYComponent_YUV422_YUYV(prevY, image, WIDTH, HEIGHT);
+		free(image);
+		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, z + 1);
+		getYComponent_YUV422_YUYV(currY, image, WIDTH, HEIGHT);
+		free(image);
+		numOfVs = blockMatchingEBMA(vectors, currY, prevY, 25, start, end);
+		filterByLength(vectors, filteredVectors, &numOfVs, 6);
 
-		startTime = clock();
-		blockMatchingMYBMA(vectors, currY, prevY, 4, start, end);
-		endTime = clock();
+		belongsTo = filterNewMethod1(filteredVectors, &numOfVs);
 
-		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
-		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
-		appendLog("D:\\logovi\\PC\\1280x720\\OPTI\\MYBMA_dummy_block=32.log", log);
-		
-		
-
+		saveBelongsTo(belongsToPath, belongsTo, numOfVs);
+		saveVectors(vectorsPath, filteredVectors, numOfVs, 6);
+		getchar();
 	}
-	*/
-	
-
-	
-	uint8_t* temp;
-	//slijedni
-	fread(yuyv, 1, frameSize, f);
-	getYComponent_YUV422_YUYV(prevY, yuyv, WIDTH, HEIGHT);
-	for (int i = 0; i < 39; i++) {
-		startTime = clock();
-		EoF = fread(yuyv, 1, frameSize, f);
-		if (EoF == 0) break;
-		getYComponent_YUV422_YUYV(currY, yuyv, WIDTH, HEIGHT);
-		printf("Framsz: %d", EoF / frameSize);
-
-		blockMatchingEBMA(vectors, currY, prevY, 25, start, end);
-		endTime = clock();
-		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
-		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
-		appendLog("D:\\logovi\\PC\\1280x720\\OPTI\\EBMA_slijedniAuto_block=32.log", log);
-		/*
-		startTime = clock();
-		blockMatchingTSS(vectors, currY, prevY, 7, start, end);
-		endTime = clock();
-		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
-		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
-		appendLog("D:\\logovi\\PC\\1280x720\\OPTI\\TSS_slijedniAuto_block=32.log", log);
-
-		startTime = clock();
-		blockMatchingMYBMA(vectors, currY, prevY, 4, start, end);
-		endTime = clock();
-
-		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
-		sprintf(log, "[DSP1  ] BMA:Frame=%d  Time=%d\n", i, cpuTime);
-		appendLog("D:\\logovi\\PC\\1280x720\\OPTI\\MYBMA_slijedniAuto_block=32.log", log);
-		*/
-		temp = prevY;
-		prevY = currY;
-		currY = temp;
-
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-
-
 	
 	
 	return 0;

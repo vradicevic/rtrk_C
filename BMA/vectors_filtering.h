@@ -41,4 +41,7 @@ float calculateMiddleVarianceAngle(int16_t** vectors, int numOfVectors, uint8_t*
 
 uint8_t* groupVectors(int16_t** vectors,uint8_t* belongsTo, int numOfVectors, int k_max);
 
+uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches);
+
+
 #endif
