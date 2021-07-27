@@ -32,10 +32,10 @@ int main(void) {
 	int ftr_num = 6;
 	uint8_t* belongsTo;
 	uint8_t* yuv444 = (uint8_t*)malloc(3*1280*720);
-	char* vectorsPath = "D:\\vektori\\vectors.bin";
-	char* belongsToPath = "D:\\vektori\\belongsTo.bin";
+	char* vectorsPath = "D:\\vektori\\vectors";
+	char* belongsToPath = "D:\\vektori\\belongsTo";
 
-	char* logPath = "D:\\logovi\\PC\\640x360\\Block=16\\OPTI\\";
+	char outPath[100];
 
 	int steps[3] = { 15,25,35 };
 	char directions[8][15] = { "Right","Down","DownRight","Left","Up","UpLeft","UpRight","DownLeft" };
@@ -66,14 +66,20 @@ int main(void) {
 		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, z + 1);
 		getYComponent_YUV422_YUYV(currY, image, WIDTH, HEIGHT);
 		free(image);
-		numOfVs = blockMatchingEBMA(vectors, currY, prevY, 25, start, end);
+		numOfVs = blockMatchingMYBMA(vectors, currY, prevY, 7, start, end);
 		filterByLength(vectors, filteredVectors, &numOfVs, 6);
-
+		startTime = clock();
 		belongsTo = filterNewMethod1(filteredVectors, &numOfVs);
+		endTime = clock();
+		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);
+		printf("Time of filtering = %d\n", cpuTime);
 
-		saveBelongsTo(belongsToPath, belongsTo, numOfVs);
-		saveVectors(vectorsPath, filteredVectors, numOfVs, 6);
-		getchar();
+		sprintf(outPath, "%s%d.bin", belongsToPath, z);
+		saveBelongsTo(outPath, belongsTo, numOfVs);
+		sprintf(outPath, "%s%d.bin", vectorsPath, z);
+		
+		saveVectors(outPath, filteredVectors, numOfVs, 6);
+		
 	}
 	
 	

@@ -105,8 +105,11 @@ void findMinMaxColumns(float* minima, float* maxima, uint8_t ftr_num, int16_t** 
             if ((float)vectorsFiltered[ftr_i][index] > maxima[ftr_i]) {
                 maxima[ftr_i] = (float)vectorsFiltered[ftr_i][index];
             }
+			
         }
     }
+
+	
 
 }
 
@@ -177,12 +180,23 @@ void initializeMeans(float** means, uint8_t k, uint8_t ftr_num, float* minima, f
 }
 
 float minkowskiDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr_num) {
-	float r=3;
+	float r=4;
 	float sum = 0;
 	uint8_t ftr_i = 0;
+
 	for (ftr_i = 0; ftr_i < ftr_num; ftr_i++) {
-		sum += pow(abs(vectors[ftr_i][v_index] - mean[ftr_i]), r);
+		
+		if (ftr_i == FTR_ANGLE) {
+			sum += pow(CAST_ANGLE_DIS(abs((int16_t)(mean[ftr_i] - vectors[ftr_i][v_index])) % 360), r);
+		}
+		else {
+			sum += pow(abs(vectors[ftr_i][v_index] - mean[ftr_i]), r);
+		}
+
+
+
 	}
+
 	return pow(sum, 1.0 / r);
 }
 
@@ -277,12 +291,17 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
 			if (j == 0) {
 				clusterSizes[index] += 1;
 				cSize = clusterSizes[index];
-
+				if (cSize <= 0) {
+					printf("\nMANJIJE!!!!!!!!!!!!!!!!!!!!\n");
+				}
 				updateMean(cSize, *(means + index), vectors, i, ftr_num);
 				noChange = 0;
 			}else if (index != belongsTo[i]) {
 				clusterSizes[index] += 1;
 				cSize = clusterSizes[index];
+				if (cSize <= 0) {
+					printf("\nMANJIJE!!!!!!!!!!!!!!!!!!!!\n");
+				}
 				updateMean(cSize, *(means + index), vectors, i, ftr_num);
 				noChange = 0;
 			}

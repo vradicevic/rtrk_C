@@ -16,6 +16,7 @@ typedef struct {
 void get2Max(uint16_t* clusterSizes, int* biggestFirst, int* biggestSecond, int* k);
 
 int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int* numOfMatches, int ftr_num);
+int16_t** filterVsAndBsByLength(int16_t** vectors, int16_t** filteredVectors, int* numOfMatches, int ftr_num, uint8_t* belongsTo);
 
 uint8_t* filterVectorsFlowSimple(int16_t** vectors, int* numOfMatches);
 float getFtrMeanOfK(int16_t* ftr, uint8_t* belongsTo, int count, int cluster_i);
@@ -42,6 +43,12 @@ float calculateMiddleVarianceAngle(int16_t** vectors, int numOfVectors, uint8_t*
 uint8_t* groupVectors(int16_t** vectors,uint8_t* belongsTo, int numOfVectors, int k_max);
 
 uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches);
+
+uint8_t checkSimilarity(float* meanFirst, float* meanSecond);
+
+float helperEuclidDis(float x1, float y1, float x2, float y2);
+
+void nullDistancedVectorsInClusters(int16_t** vectors, float** means, uint8_t* belongsTo, int numOfVs);
 
 
 #endif

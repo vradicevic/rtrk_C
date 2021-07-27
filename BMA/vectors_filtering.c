@@ -1,4 +1,4 @@
-#include "vectors_filtering.h"
+﻿#include "vectors_filtering.h"
 
 void copyCluster(int16_t** src, int16_t** dest, uint16_t* clusterSizes, uint8_t* belongsTo, uint8_t ftr_num, int cluster_i, int v_s, uint8_t interVsOffset) {
 	int i, j, z = 0;
@@ -48,7 +48,10 @@ int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int* numO
 		if (vectors[4][o] > 2 && vectors[4][o]< 50) {
 			for (int j = 0; j < ftr_num; j++) {
 				filteredVectors[j][index] = vectors[j][o];
+
 			}
+			
+
 			index++;
 		}
 	}
@@ -57,6 +60,32 @@ int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int* numO
 	*numOfMatches = index;
 	return filteredVectors;
 }
+
+int16_t** filterVsAndBsByLength(int16_t** vectors, int16_t** filteredVectors, int* numOfMatches, int ftr_num, uint8_t* belongsTo) {
+	int maxMatches = 14400;
+
+
+
+	int index = 0;
+	for (int o = 0; o < *numOfMatches; o++) {
+		if (vectors[4][o] > 2 && vectors[4][o] < 50) {
+			for (int j = 0; j < ftr_num; j++) {
+				filteredVectors[j][index] = vectors[j][o];
+
+			}
+			belongsTo[index] = belongsTo[o];
+
+			index++;
+		}
+	}
+
+
+	*numOfMatches = index;
+	return filteredVectors;
+}
+
+
+
 
 float calculateVariance(int16_t* items, float mean, int items_num, int isAngle) {
 	float var = 0;
@@ -222,6 +251,7 @@ float getFtrMeanOfK(int16_t* ftr,uint8_t* belongsTo, int count,int cluster_i) {
 	int size = 0;
 	for (int i = 0; i < count; i++) {
 		if (cluster_i == belongsTo[i]) {
+			
 			sum += ftr[i];
 			size++;
 		}
@@ -662,7 +692,7 @@ uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
 	int cluster_i, cluster_i2;
 	int16_t** items;
 	int16_t** cumulativeVectors;
-	int16_t** interVectors;
+	int16_t** cluster;
 	float** means;
 	uint8_t* belongsTo;
 	uint8_t* tempBelongsTo;
@@ -670,7 +700,7 @@ uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
 	float* maxima;
 	uint8_t k = 10;
 	int ftr_num = 6;
-	int tempNumOfVs = 0;
+	int cummNumOfVs = 0;
 	uint16_t clusterSizes[16];
 	uint16_t tempClusterSizes[16];
 	uint8_t angle_ftr_num;
@@ -694,10 +724,10 @@ uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
 	items = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
 
 
-	interVectors = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
+	cluster = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
 
 	for (i = 0; i < 6; i++) {
-		interVectors[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
+		cluster[i] = (int16_t*)malloc(maxMatches * sizeof(int16_t));
 	}
 	cumulativeVectors = (int16_t * *)malloc(ftr_num * sizeof(int16_t*));
 	
@@ -706,28 +736,152 @@ uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
 	}
 
 	//Grupiraj prema kutu i duljini
-	k = 2;
+	k = 3;
 	
-	ftr_num = 3;
+	ftr_num = 4;
 	items[0] = vectors[0];
 	items[1] = vectors[1];
-	
-	items[4] = vectors[4];
-	angle_ftr_num = 5;
+	items[2] = vectors[4];
+	items[3] = vectors[5];
+	angle_ftr_num = 3;
 
 	calculateMeans(means, k, ftr_num, items, *numOfMatches, 25, belongsTo, clusterSizes, minima, maxima, angle_ftr_num);
 	findClusters(means, items, *numOfMatches, k, ftr_num, clusterSizes, belongsTo);
 	
 	//printf("\nCluster sizes: %d; %d; %d; %d;\n", clusterSizes[0], clusterSizes[1], clusterSizes[2], clusterSizes[3]);
-	ftr_num = 6;
-	//ispitivanje centroida kuta, ukoliko se razlikuju za manje od 10 stupnjeva smatraj ih istim centroidom
-	
+	for (int j = 0; j < k; j++) {
+		for (int i = 0; i < ftr_num; i++) {
+			means[j][i] = getFtrMeanOfK(items[i], belongsTo, *numOfMatches, j);
+		}
+	}
 	
 
-	//Grupiraj svaki klaster u dva klastera po lokaciji, ukoliko su im centroidi blizu ( recimo udaljeni manje od 1/4 elemenata slike 
+
+
+	ftr_num = 6;
+	uint8_t first_second_Similarity = 0;
+	uint8_t second_third_Similarity = 0;
+	uint8_t first_third_Similarity = 0;
+	first_second_Similarity = checkSimilarity(means[0], means[1]);
+	first_third_Similarity = checkSimilarity(means[0], means[2]);
+	second_third_Similarity = checkSimilarity(means[1], means[2]);
+	
+	
+	copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 0, *numOfMatches, 0);
+	cummNumOfVs = clusterSizes[0];
+	memset(tempBelongsTo, 0, cummNumOfVs);
+	if (first_second_Similarity * first_third_Similarity * second_third_Similarity) {
+		memset(tempBelongsTo, 0, *numOfMatches);
+		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		cummNumOfVs += clusterSizes[1];
+		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		cummNumOfVs += clusterSizes[2];
+		memset(tempBelongsTo, 0, cummNumOfVs);
+		//printf("All similar %d %d %d \n",clusterSizes[0],clusterSizes[1],clusterSizes[2]);
+	}
+	else if (first_second_Similarity) {
+		//kopiraj drugi klaster u prvi klaster
+		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		cummNumOfVs += clusterSizes[1];
+		memset(tempBelongsTo, 0, cummNumOfVs);
+		//kopiraj treći klaster u drugi klaster
+		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		memset(tempBelongsTo+cummNumOfVs, 1, clusterSizes[2]);
+		cummNumOfVs += clusterSizes[2];
+		//printf("First and second %d %d %d\n", clusterSizes[0], clusterSizes[1], clusterSizes[2]);
+	}
+	else if (first_third_Similarity) {
+		//kopiraj treći klaster u prvi
+		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		cummNumOfVs += clusterSizes[2];
+		memset(tempBelongsTo, 0, cummNumOfVs);
+
+		//kopiraj drugi klaster u drugi klaster
+		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		memset(tempBelongsTo + cummNumOfVs, 1, clusterSizes[1]);
+		cummNumOfVs += clusterSizes[1];
+		//printf("First and third\n");
+
+
+	}
+	else if(second_third_Similarity){
+		//kopiraj drugi klaster u drugi klaster
+		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		memset(tempBelongsTo + cummNumOfVs, 1, clusterSizes[1]);
+		cummNumOfVs += clusterSizes[1];
+		//kopiraj treći klaster u drugi klaster
+		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		memset(tempBelongsTo + cummNumOfVs, 1, clusterSizes[2]);
+		cummNumOfVs += clusterSizes[1];
+		//printf("third and second\n");
+
+	}
+	nullDistancedVectorsInClusters(cumulativeVectors, means, tempBelongsTo, cumulativeVectors);
+
+	filterVsAndBsByLength(cumulativeVectors, vectors, &cummNumOfVs, 6,belongsTo);
+
+
+
+
+	copyVectors(vectors, cumulativeVectors, cummNumOfVs);
+	copyBelongsTo(tempBelongsTo, belongsTo, cummNumOfVs);
+
+	
+
+	
 
 
 
 	return belongsTo;
+
+}
+
+uint8_t checkSimilarity(float* meanFirst, float* meanSecond) {//mean je u ovome UC-u složen kao [0] - x ishodista, [1] - y ishodissta, [2] - duljina, [3] - kut
+	//ispitivanje centroida kuta, ukoliko se razlikuju za manje od 10 stupnjeva smatraj ih istim centroidom
+	uint8_t angleSim = 0, lengthSim = 0, locationSim = 0;
+	int angleDis = CAST_ANGLE_DIS(abs(meanFirst[3] - meanSecond[3]) % 360);
+	//printf("Angle dis %f %f %d\n", meanFirst[3], meanSecond[3], angleDis);
+
+	float lengthDis = abs(meanFirst[2] - meanSecond[2]);
+	//printf("Length dis %f,%f, %f\n",meanFirst[2],meanSecond[2], lengthDis);
+
+	float locationDis = helperEuclidDis(meanFirst[0], meanFirst[1], meanSecond[0], meanSecond[1]);
+	
+
+	if (angleDis < 20) {
+		angleSim = 1;
+	}
+	if (lengthDis < 10) {
+		lengthSim = 1;
+	}
+	if (locationDis <0.25*WIDTH) {
+		locationSim = 1;
+	}
+	return (uint8_t)(angleSim * /*lengthSim**/ locationSim);
+
+
+
+}
+
+float helperEuclidDis(float x1, float y1, float x2, float y2) {
+
+	float sum;
+	
+	sum = pow(fabs(x1 - x2), 2) + pow(fabs(y1 - y2), 2);
+	
+	return sqrt(sum);
+
+
+}
+
+void nullDistancedVectorsInClusters(int16_t** vectors,float** means, uint8_t* belongsTo, int numOfVs) {//mean je u ovome UC-u složen kao [0] - x ishodista, [1] - y ishodissta, [2] - duljina, [3] - kut
+	
+	int dev = 0;
+	for (int i = 0; i < numOfVs; i++) {
+		dev = CAST_ANGLE_DIS(abs((int16_t)means[belongsTo[i]][3] - vectors[5][i]));
+		if (dev > 150) {
+			vectors[4][i] = 0;
+		}
+	}
 
 }
