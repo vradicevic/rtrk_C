@@ -1,6 +1,6 @@
 ﻿#include "vectors_filtering.h"
 
-void copyCluster(int16_t** src, int16_t** dest, uint16_t* clusterSizes, uint8_t* belongsTo, uint8_t ftr_num, int cluster_i, int v_s, uint8_t interVsOffset) {
+int copyCluster(int16_t** src, int16_t** dest, uint8_t* belongsTo, uint8_t ftr_num, int cluster_i, int v_s, uint8_t interVsOffset) {
 	int i, j, z = 0;
 	for (i = 0; i < v_s; i++) {
 		if (cluster_i == belongsTo[i]) {
@@ -11,6 +11,7 @@ void copyCluster(int16_t** src, int16_t** dest, uint16_t* clusterSizes, uint8_t*
 			z++;
 		}
 	}
+	return z;
 	//printf("\nValue of z %d a cluster sizes %d\n", z,clusterSizes[cluster_i]);
 }
 void copyVectors(int16_t** dest, int16_t** src, int numOfMatches) {
@@ -100,6 +101,16 @@ float calculateVariance(int16_t* items, float mean, int items_num, int isAngle) 
 	return var;
 
 }
+
+
+
+
+
+
+
+
+
+
 void get2Max(uint16_t* clusterSizes, int* biggestFirst, int* biggestSecond, int* k) {
 	volatile int i;
 	(*biggestFirst) = 0;
@@ -202,7 +213,7 @@ uint8_t* filterVectorsFlowSimple(int16_t** vectors, int* numOfMatches) {
 	for (int i = 0; i < k; i++) {
 		temp = *numOfMatches;
 		ftr_num = 6;
-		copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, i, temp, 0);
+		copyCluster(vectors, interVectors, belongsTo, ftr_num, i, temp, 0);
 		temp = clusterSizes[i];
 		k_temp = 2;
 		ftr_num = 1;
@@ -245,19 +256,36 @@ int getBestKByLengthMean(int16_t* lengths, int k,uint8_t* belongsTo,uint16_t*clu
 	}
 	return winner;
 }
-float getFtrMeanOfK(int16_t* ftr,uint8_t* belongsTo, int count,int cluster_i) {
+float getFtrMeanOfK(int16_t* ftr,uint8_t* belongsTo, int count,int cluster_i, uint8_t isAngle) {
 	int sum=0;
 	float result = 0;
 	int size = 0;
-	for (int i = 0; i < count; i++) {
+	float y_part = 0, x_part = 0;
+	int i;
+
+	
+	for (i = 0; i < count; i++) {
 		if (cluster_i == belongsTo[i]) {
+			if (isAngle) {
+				x_part += cos((float)ftr[i] * PI / 180);
+				y_part += sin((float)ftr[i] * PI / 180);
+			}
+			else {
+				sum += ftr[i];
+			}
 			
-			sum += ftr[i];
 			size++;
 		}
 		
 	}
-	result = sum / (float)size;
+	
+	if (isAngle) {
+		result  = CAST_ANGLE( (atan2(y_part / size, x_part / size) * 180 / PI));
+	}
+	else {
+		result = sum / (float)size;
+	}
+	
 	return result;
 }
 uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches) {
@@ -324,9 +352,9 @@ uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches) {
     cluster_i2 = calculateNexBestVariance(means, vectors, clusterSizes, belongsTo, num, k, cluster_i);
     
 	ftr_num = 6;
-    copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, cluster_i, num, 0);
+    copyCluster(vectors, interVectors,  belongsTo, ftr_num, cluster_i, num, 0);
     
-    copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, cluster_i2, num, clusterSizes[cluster_i]);
+    copyCluster(vectors, interVectors,  belongsTo, ftr_num, cluster_i2, num, clusterSizes[cluster_i]);
     
     *numOfMatches = clusterSizes[cluster_i] + clusterSizes[cluster_i2];
     copyVectors(vectors, interVectors, *numOfMatches);
@@ -349,8 +377,8 @@ uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches) {
 	uint8_t first, second;
 	get2Max(clusterSizes, &first, &second, &k);
 	ftr_num = 6;
-	copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, first, num, 0);
-	copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, second, num, clusterSizes[first]);
+	copyCluster(vectors, interVectors, belongsTo, ftr_num, first, num, 0);
+	copyCluster(vectors, interVectors,  belongsTo, ftr_num, second, num, clusterSizes[first]);
 	*numOfMatches = clusterSizes[first] + clusterSizes[second];
 	copyVectors(vectors, interVectors, *numOfMatches);
 	items[0] = vectors[2];
@@ -436,7 +464,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
 	for (int i = 0; i < k; i++) {
 		temp = *numOfMatches;
 		ftr_num = 6;
-		copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, i, temp, 0);
+		copyCluster(vectors, interVectors, belongsTo, ftr_num, i, temp, 0);
 		temp = clusterSizes[i];
 		k_temp = 2;
 		ftr_num = 1;
@@ -454,7 +482,7 @@ uint8_t* filterVectorsFlowMoving(int16_t** vectors, int* numOfMatches) {
 		calculateMeans(means, k_temp, ftr_num, items, temp, 10000, tempBelongsTo, tempClusterSizes, minima, maxima, angle_ftr_num);
 		findClusters(means, items, temp, k_temp, ftr_num, tempClusterSizes, tempBelongsTo);
 		best = getBestClusterByLength(means, 0, k_temp);
-		copyCluster(interVectors, cumulativeVectors, tempClusterSizes, tempBelongsTo, 6, best, temp, cummulativeSize);
+		copyCluster(interVectors, cumulativeVectors, tempBelongsTo, 6, best, temp, cummulativeSize);
 		
 		cummulativeSize += tempClusterSizes[best];
 		//printf("\nVarijanca klaster: %f\n", calculateVariance(interVectors[5], means[best][5], tempClusterSizes[best], 1));
@@ -567,7 +595,7 @@ uint8_t* filterVectorsBackSub(int16_t** vectors, int* numOfMatches) {
 	for (int i = 0; i < k; i++) {
 		temp = *numOfMatches;
 		ftr_num = 6;
-		copyCluster(vectors, interVectors, clusterSizes, belongsTo, ftr_num, i, temp, 0);
+		copyCluster(vectors, interVectors,  belongsTo, ftr_num, i, temp, 0);
 		temp = clusterSizes[i];
 		k_temp = 2;
 		ftr_num = 1;
@@ -585,7 +613,7 @@ uint8_t* filterVectorsBackSub(int16_t** vectors, int* numOfMatches) {
 		//calculateMeans(means, k_temp, ftr_num, items, temp, 10000, tempBelongsTo, tempClusterSizes, minima, maxima, angle_ftr_num);
 		//findClusters(means, items, temp, k_temp, ftr_num, tempClusterSizes, tempBelongsTo);
 		//best = getBestClusterByLength(means, 0, k_temp);
-		copyCluster(interVectors, cumulativeVectors, tempClusterSizes, tempBelongsTo, 6, best, temp, cummulativeSize);
+		copyCluster(interVectors, cumulativeVectors,  tempBelongsTo, 6, best, temp, cummulativeSize);
 
 		cummulativeSize += tempClusterSizes[best];
 		//printf("\nVarijanca klaster: %f\n", calculateVariance(interVectors[5], means[best][5], tempClusterSizes[best], 1));
@@ -685,10 +713,24 @@ uint8_t* groupVectors(int16_t** vectors, uint8_t* belongsTo, int numOfVectors, i
 
 }
 
+float getAngleDeviation(float mean, int16_t* items, int clusterSize)
+{
+	int i;
+	float sum = 0;
+	for (i = 0; i < clusterSize; i++) {
+		sum += CAST_ANGLE_DIS(abs(mean - items[i]) % 360);
+		//printf("Mean %f, items %d, sum %f,cluster size %d \n",mean, items[i], sum,clusterSize);
+	}
+
+
+	return (sum/(clusterSize*180))*100;
+}
+
 
 uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
 
 	int maxMatches = 14400;
+	int j;
 	int cluster_i, cluster_i2;
 	int16_t** items;
 	int16_t** cumulativeVectors;
@@ -751,13 +793,26 @@ uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
 	//printf("\nCluster sizes: %d; %d; %d; %d;\n", clusterSizes[0], clusterSizes[1], clusterSizes[2], clusterSizes[3]);
 	for (int j = 0; j < k; j++) {
 		for (int i = 0; i < ftr_num; i++) {
-			means[j][i] = getFtrMeanOfK(items[i], belongsTo, *numOfMatches, j);
+			if (clusterSizes[j] == 0) {
+				means[j][i] = 0;
+			}
+			else {
+
+				if (i == 3) {
+					means[j][i] = getFtrMeanOfK(items[i], belongsTo, *numOfMatches, j, 1);
+				}
+				else {
+					means[j][i] = getFtrMeanOfK(items[i], belongsTo, *numOfMatches, j, 0);
+				}
+
+			}
+
 		}
 	}
 	
 
 
-
+	int clusterSize;
 	ftr_num = 6;
 	uint8_t first_second_Similarity = 0;
 	uint8_t second_third_Similarity = 0;
@@ -767,67 +822,166 @@ uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
 	second_third_Similarity = checkSimilarity(means[1], means[2]);
 	
 	
-	copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 0, *numOfMatches, 0);
+	clusterSize = copyCluster(vectors, cumulativeVectors,  belongsTo, 6, 0, *numOfMatches, 0);
 	cummNumOfVs = clusterSizes[0];
+	clusterSizes[0] = clusterSize;
 	memset(tempBelongsTo, 0, cummNumOfVs);
+	k = 1;
 	if (first_second_Similarity * first_third_Similarity * second_third_Similarity) {
 		memset(tempBelongsTo, 0, *numOfMatches);
-		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		copyCluster(vectors, cumulativeVectors, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
 		cummNumOfVs += clusterSizes[1];
-		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		copyCluster(vectors, cumulativeVectors,  belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
 		cummNumOfVs += clusterSizes[2];
 		memset(tempBelongsTo, 0, cummNumOfVs);
+		clusterSizes[0] = cummNumOfVs;
 		//printf("All similar %d %d %d \n",clusterSizes[0],clusterSizes[1],clusterSizes[2]);
 	}
 	else if (first_second_Similarity) {
 		//kopiraj drugi klaster u prvi klaster
-		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		copyCluster(vectors, cumulativeVectors, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
 		cummNumOfVs += clusterSizes[1];
+		clusterSizes[0] = cummNumOfVs;
 		memset(tempBelongsTo, 0, cummNumOfVs);
 		//kopiraj treći klaster u drugi klaster
-		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		copyCluster(vectors, cumulativeVectors, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
 		memset(tempBelongsTo+cummNumOfVs, 1, clusterSizes[2]);
 		cummNumOfVs += clusterSizes[2];
+		clusterSizes[1] = clusterSizes[2];
 		//printf("First and second %d %d %d\n", clusterSizes[0], clusterSizes[1], clusterSizes[2]);
+		k = 2;
 	}
 	else if (first_third_Similarity) {
 		//kopiraj treći klaster u prvi
-		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		copyCluster(vectors, cumulativeVectors,  belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
 		cummNumOfVs += clusterSizes[2];
 		memset(tempBelongsTo, 0, cummNumOfVs);
+		clusterSizes[0] = cummNumOfVs;
 
 		//kopiraj drugi klaster u drugi klaster
-		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		copyCluster(vectors, cumulativeVectors,  belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
 		memset(tempBelongsTo + cummNumOfVs, 1, clusterSizes[1]);
 		cummNumOfVs += clusterSizes[1];
+		clusterSizes[1] = clusterSizes[1];
 		//printf("First and third\n");
+		k = 2;
 
 
 	}
 	else if(second_third_Similarity){
 		//kopiraj drugi klaster u drugi klaster
-		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		copyCluster(vectors, cumulativeVectors,  belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
 		memset(tempBelongsTo + cummNumOfVs, 1, clusterSizes[1]);
 		cummNumOfVs += clusterSizes[1];
+
 		//kopiraj treći klaster u drugi klaster
-		copyCluster(vectors, cumulativeVectors, clusterSizes, belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		copyCluster(vectors, cumulativeVectors,  belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
 		memset(tempBelongsTo + cummNumOfVs, 1, clusterSizes[2]);
-		cummNumOfVs += clusterSizes[1];
+		cummNumOfVs += clusterSizes[2];
+		clusterSizes[0] += clusterSizes[2];
 		//printf("third and second\n");
+		k = 2;
 
 	}
-	nullDistancedVectorsInClusters(cumulativeVectors, means, tempBelongsTo, cumulativeVectors);
+	else {
+		//kopiraj drugi klaster u drugi klaster
+		copyCluster(vectors, cumulativeVectors, belongsTo, 6, 1, *numOfMatches, cummNumOfVs);
+		memset(tempBelongsTo + cummNumOfVs, 1, clusterSizes[1]);
+		cummNumOfVs += clusterSizes[1];
+		//kopiraj treći klaster u treći klaster
+		copyCluster(vectors, cumulativeVectors,  belongsTo, 6, 2, *numOfMatches, cummNumOfVs);
+		memset(tempBelongsTo + cummNumOfVs, 2, clusterSizes[2]);
+		cummNumOfVs += clusterSizes[2];
+		k = 3;
+		
 
-	filterVsAndBsByLength(cumulativeVectors, vectors, &cummNumOfVs, 6,belongsTo);
+	}
+	items[0] = cumulativeVectors[0];
+	items[1] = cumulativeVectors[1];
+	items[2] = cumulativeVectors[4];
+	items[3] = cumulativeVectors[5];
+	ftr_num = 4;
+	for (j = 0; j < k; j++) {
+		for (int i = 0; i < ftr_num; i++) {
+			if (clusterSizes[j] == 0) {
+				means[j][i] = 0;
+			}
+			else {
+				
+				if (i == 3) {
+					means[j][i] = getFtrMeanOfK(items[i], tempBelongsTo, cummNumOfVs, j, 1);
+				}
+				else {
+					means[j][i] = getFtrMeanOfK(items[i], tempBelongsTo, cummNumOfVs, j,0);
+				}
 
+			}
 
-
-
+		}
+	}
 	copyVectors(vectors, cumulativeVectors, cummNumOfVs);
 	copyBelongsTo(tempBelongsTo, belongsTo, cummNumOfVs);
+	
+	float var;
+	uint8_t reCluster[3];
+	for (j = 0; j < k; j++) {
+		//izračunaj varijancu kuta za cluster
+		reCluster[j] = 0;
+		int clusterSize = copyCluster(cumulativeVectors, cluster, tempBelongsTo, 6, j, cummNumOfVs, 0);
+		clusterSizes[j]= clusterSize;
+		if (clusterSize != 0) {
+			var = getAngleDeviation(means[j][3], cluster[5], clusterSize);
+
+			//printf("Moguće posto %f\n", var);
+			if (var > 35.0) {
+				reCluster[j] = 1;
+			}
+			
+		}
+		
+
+	}
 
 	
 
+	*numOfMatches = cummNumOfVs;
+	ftr_num = 1;
+	angle_ftr_num = 0;	
+	uint8_t newK = 0;
+	
+	cummNumOfVs = 0;
+	for(j = 0; j < k; j++) {
+		if (reCluster[j]) {
+			clusterSize = copyCluster(vectors, cluster, belongsTo, 6, j, *numOfMatches, 0);
+			items[0] = cluster[5];
+			copyVectors(cumulativeVectors, cluster, clusterSize);
+
+			calculateMeans(means, 2, ftr_num, items, clusterSize, 25, tempBelongsTo, tempClusterSizes, minima, maxima, angle_ftr_num);
+			findClusters(means, items, clusterSize, 2, ftr_num, tempClusterSizes, tempBelongsTo);
+			memset(tempBelongsTo + cummNumOfVs, newK, tempClusterSizes[0]);
+			newK++;
+			cummNumOfVs += tempClusterSizes[0];
+			memset(tempBelongsTo + cummNumOfVs, newK, tempClusterSizes[1]);
+			newK++;
+			cummNumOfVs += tempClusterSizes[1];
+			
+
+		}
+		else {
+			clusterSize= copyCluster(vectors, cumulativeVectors, belongsTo, 6, j, *numOfMatches, cummNumOfVs);
+			memset(tempBelongsTo+ cummNumOfVs, newK, clusterSizes[j]);
+			cummNumOfVs += clusterSizes[j];
+			newK++;
+			//printf("NewK %d, %d, %d\n", newK,k,clusterSizes[j]);
+
+		}
+		
+	}
+
+	copyVectors(vectors, cumulativeVectors, cummNumOfVs);
+	copyBelongsTo(tempBelongsTo, belongsTo, cummNumOfVs);
+	
+	
 	
 
 
@@ -848,7 +1002,7 @@ uint8_t checkSimilarity(float* meanFirst, float* meanSecond) {//mean je u ovome 
 	float locationDis = helperEuclidDis(meanFirst[0], meanFirst[1], meanSecond[0], meanSecond[1]);
 	
 
-	if (angleDis < 20) {
+	if (angleDis < 40) {
 		angleSim = 1;
 	}
 	if (lengthDis < 10) {
@@ -857,7 +1011,7 @@ uint8_t checkSimilarity(float* meanFirst, float* meanSecond) {//mean je u ovome 
 	if (locationDis <0.25*WIDTH) {
 		locationSim = 1;
 	}
-	return (uint8_t)(angleSim * /*lengthSim**/ locationSim);
+	return (uint8_t)(angleSim * lengthSim* locationSim);
 
 
 
@@ -879,9 +1033,11 @@ void nullDistancedVectorsInClusters(int16_t** vectors,float** means, uint8_t* be
 	int dev = 0;
 	for (int i = 0; i < numOfVs; i++) {
 		dev = CAST_ANGLE_DIS(abs((int16_t)means[belongsTo[i]][3] - vectors[5][i]));
+		printf("distance of angles %d\n", dev);
 		if (dev > 150) {
-			vectors[4][i] = 0;
+			//vectors[4][i] = 0;
 		}
 	}
 
 }
+

@@ -19,7 +19,7 @@ int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int* numO
 int16_t** filterVsAndBsByLength(int16_t** vectors, int16_t** filteredVectors, int* numOfMatches, int ftr_num, uint8_t* belongsTo);
 
 uint8_t* filterVectorsFlowSimple(int16_t** vectors, int* numOfMatches);
-float getFtrMeanOfK(int16_t* ftr, uint8_t* belongsTo, int count, int cluster_i);
+float getFtrMeanOfK(int16_t* ftr, uint8_t* belongsTo, int count, int cluster_i,  uint8_t isAngle);
 int getBestKByLengthMean(int16_t* lengths, int k, uint8_t* belongsTo, uint16_t* clusterSizes, int numOfVectors);
 
 uint8_t* filterVectorsFlow(int16_t** vectors, int* numOfMatches);
@@ -32,7 +32,7 @@ void copyBelongsTo(uint8_t* src, uint8_t* dest, int count);
 
 void copyClusterSizes(uint16_t* src, uint16_t* dest, int count);
 
-void copyCluster(int16_t** src, int16_t** dest, uint16_t* clusterSizes, uint8_t* belongsTo, uint8_t ftr_num, int cluster_i, int v_s, int interVsOffset);
+int copyCluster(int16_t** src, int16_t** dest, uint8_t* belongsTo, uint8_t ftr_num, int cluster_i, int v_s, int interVsOffset);
 
 void copyVectors(int16_t** dest, int16_t** src, int numOfMatches);
 
@@ -42,6 +42,8 @@ float calculateMiddleVarianceAngle(int16_t** vectors, int numOfVectors, uint8_t*
 
 uint8_t* groupVectors(int16_t** vectors,uint8_t* belongsTo, int numOfVectors, int k_max);
 
+float getAngleDeviation(float mean, int16_t* items, int clusterSize);
+
 uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches);
 
 uint8_t checkSimilarity(float* meanFirst, float* meanSecond);
@@ -49,6 +51,7 @@ uint8_t checkSimilarity(float* meanFirst, float* meanSecond);
 float helperEuclidDis(float x1, float y1, float x2, float y2);
 
 void nullDistancedVectorsInClusters(int16_t** vectors, float** means, uint8_t* belongsTo, int numOfVs);
+
 
 
 #endif

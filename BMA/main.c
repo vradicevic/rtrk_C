@@ -58,7 +58,7 @@ int main(void) {
 	int EoF;
 	uint8_t* image;
 
-
+	int a = 1;
 	for (int z = 0; z < 40; z += 2) {
 		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, z);
 		getYComponent_YUV422_YUYV(prevY, image, WIDTH, HEIGHT);
@@ -69,6 +69,7 @@ int main(void) {
 		numOfVs = blockMatchingMYBMA(vectors, currY, prevY, 7, start, end);
 		filterByLength(vectors, filteredVectors, &numOfVs, 6);
 		startTime = clock();
+		printf("\nSlika %d\n", a++);
 		belongsTo = filterNewMethod1(filteredVectors, &numOfVs);
 		endTime = clock();
 		cpuTime = (int)((((double)(endTime - startTime)) / CLOCKS_PER_SEC) * 1000);

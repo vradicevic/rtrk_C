@@ -193,9 +193,10 @@ float minkowskiDistance(int16_t** vectors, int v_index, float* mean, uint8_t ftr
 			sum += pow(abs(vectors[ftr_i][v_index] - mean[ftr_i]), r);
 		}
 
-
+		
 
 	}
+	
 
 	return pow(sum, 1.0 / r);
 }
@@ -243,9 +244,7 @@ int classify(float** means, int16_t** vectors, int v_index, uint8_t k, uint8_t f
             index = i;
         }
     }
-	if (index < 0) {
-		printf("index je manji od nula");
-	}
+	
     //Vps_printf("Index = %d",index);
     return index;
 
@@ -291,17 +290,13 @@ void calculateMeans(float** means, uint8_t k, uint8_t ftr_num, int16_t** vectors
 			if (j == 0) {
 				clusterSizes[index] += 1;
 				cSize = clusterSizes[index];
-				if (cSize <= 0) {
-					printf("\nMANJIJE!!!!!!!!!!!!!!!!!!!!\n");
-				}
+				
 				updateMean(cSize, *(means + index), vectors, i, ftr_num);
 				noChange = 0;
 			}else if (index != belongsTo[i]) {
 				clusterSizes[index] += 1;
 				cSize = clusterSizes[index];
-				if (cSize <= 0) {
-					printf("\nMANJIJE!!!!!!!!!!!!!!!!!!!!\n");
-				}
+				
 				updateMean(cSize, *(means + index), vectors, i, ftr_num);
 				noChange = 0;
 			}
