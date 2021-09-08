@@ -25,6 +25,19 @@ void copyVectors(int16_t** dest, int16_t** src, int numOfMatches) {
 		//printf("\nCopy vektors angle: %d\n", vectors[5][i]);
 	}
 }
+void appendVectors(int16_t** dest, int16_t** src, int numOfMatches,int offset) {
+	for (int i = 0; i < numOfMatches; i++) {
+		dest[0][offset+i] = src[0][i];
+		dest[1][offset + i] = src[1][i];
+		dest[2][offset + i] = src[2][i];
+		dest[3][offset + i] = src[3][i];
+		dest[4][offset + i] = src[4][i];
+		dest[5][offset + i] = src[5][i];
+		//printf("\nCopy vektors angle: %d\n", vectors[5][i]);
+	}
+}
+
+
 void copyBelongsTo(uint8_t* src, uint8_t* dest, int count) {
 	int i;
 	for (i = 0; i < count; i++) {
@@ -39,12 +52,12 @@ void copyClusterSizes(uint8_t* src, uint8_t* dest, int count) {
 }
 
 
-int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int* numOfMatches,int ftr_num) {
+int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int16_t* numOfMatches,int ftr_num) {
 	int maxMatches = 14400;
 	
 
 	
-	int index = 0;
+	int16_t index = 0;
 	for (int o = 0; o < *numOfMatches; o++) {
 		if (vectors[4][o] > 2 && vectors[4][o]< 50) {
 			for (int j = 0; j < ftr_num; j++) {
@@ -719,7 +732,6 @@ float getAngleDeviation(float mean, int16_t* items, int clusterSize)
 	float sum = 0;
 	for (i = 0; i < clusterSize; i++) {
 		sum += CAST_ANGLE_DIS(abs(mean - items[i]) % 360);
-		//printf("Mean %f, items %d, sum %f,cluster size %d \n",mean, items[i], sum,clusterSize);
 	}
 
 
@@ -991,17 +1003,11 @@ uint8_t* filterNewMethod1(int16_t** vectors, int* numOfMatches) {
 }
 
 uint8_t checkSimilarity(float* meanFirst, float* meanSecond) {//mean je u ovome UC-u složen kao [0] - x ishodista, [1] - y ishodissta, [2] - duljina, [3] - kut
-	//ispitivanje centroida kuta, ukoliko se razlikuju za manje od 10 stupnjeva smatraj ih istim centroidom
+	
 	uint8_t angleSim = 0, lengthSim = 0, locationSim = 0;
 	int angleDis = CAST_ANGLE_DIS(abs(meanFirst[3] - meanSecond[3]) % 360);
-	//printf("Angle dis %f %f %d\n", meanFirst[3], meanSecond[3], angleDis);
-
 	float lengthDis = abs(meanFirst[2] - meanSecond[2]);
-	//printf("Length dis %f,%f, %f\n",meanFirst[2],meanSecond[2], lengthDis);
-
 	float locationDis = helperEuclidDis(meanFirst[0], meanFirst[1], meanSecond[0], meanSecond[1]);
-	
-
 	if (angleDis < 40) {
 		angleSim = 1;
 	}
@@ -1012,9 +1018,6 @@ uint8_t checkSimilarity(float* meanFirst, float* meanSecond) {//mean je u ovome 
 		locationSim = 1;
 	}
 	return (uint8_t)(angleSim * lengthSim* locationSim);
-
-
-
 }
 
 float helperEuclidDis(float x1, float y1, float x2, float y2) {

@@ -15,7 +15,7 @@ typedef struct {
 
 void get2Max(uint16_t* clusterSizes, int* biggestFirst, int* biggestSecond, int* k);
 
-int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int* numOfMatches, int ftr_num);
+int16_t** filterByLength(int16_t** vectors, int16_t** filteredVectors, int16_t* numOfMatches, int ftr_num);
 int16_t** filterVsAndBsByLength(int16_t** vectors, int16_t** filteredVectors, int* numOfMatches, int ftr_num, uint8_t* belongsTo);
 
 uint8_t* filterVectorsFlowSimple(int16_t** vectors, int* numOfMatches);
@@ -52,6 +52,6 @@ float helperEuclidDis(float x1, float y1, float x2, float y2);
 
 void nullDistancedVectorsInClusters(int16_t** vectors, float** means, uint8_t* belongsTo, int numOfVs);
 
-
+void appendVectors(int16_t** dest, int16_t** src, int numOfMatches, int offset);
 
 #endif

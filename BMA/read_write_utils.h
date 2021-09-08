@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "bma_utils.h"
 
 uint8_t* readFileYUV422_YUYV(char* filepath, int width, int height);
 
@@ -40,5 +41,9 @@ void saveYComponent(char* filepath, uint8_t* buffY, int width, int height);
 void appendYComponent(char* filepath, uint8_t* buffY, int width, int height);
 
 void appendLog(char* filePath, char* log);
+
+int extractBBInfo(uint8_t* img, int width, int height, Point bb[8]);
+
+void saveClusterInfo(char* savePath, int k, int16_t vectorsNum[4]);
 
 #endif

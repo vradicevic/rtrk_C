@@ -1,4 +1,5 @@
 #include "read_write_utils.h"
+
 uint8_t* readFileYUV422_YUYV(char* filepath,int width, int height) {
     uint8_t* yuyv = (uint8_t*) malloc(width*height*2*sizeof(uint8_t));
     FILE* file = fopen(filepath, "rb");
@@ -91,6 +92,7 @@ uint8_t* readFrameFrom444YUVVideo(char* filepath, int width, int height, int fra
 
 
 
+
 void saveVectors(char* filepath, int16_t** buff, int16_t itemsNum, int wordWidth) {//u slucaju vektora itemsNum je num of vectors, a wordWidth je ftr_num
     FILE* file = fopen(filepath, "wb");
     //fwrite(&itemsNum, sizeof(int16_t), 1, file);
@@ -102,7 +104,7 @@ void saveVectors(char* filepath, int16_t** buff, int16_t itemsNum, int wordWidth
         }
     }
     fclose(file);
-    printf("File write done\n");
+    //printf("File write done\n");
 }
 
 void appendFrameToYUYVFile(char* filepath, uint8_t* yuyv, int width, int height) {
@@ -154,4 +156,47 @@ void appendLog(char* filePath,char* log) {
 	fprintf(fileAppend, log);
 	fclose(fileAppend);
 	printf("\nLogSaved");
+}
+
+int extractBBInfo(uint8_t* img, int width, int height, Point bb[8]) {
+	int k = img[width * height];
+	int value=0;
+	int selector = width*height+1;
+	for (int i = 0; i < k*2; i+=2) {
+		value += img[selector++] * 1000;
+		value += img[selector++] * 100;
+		value += img[selector++] * 10;
+		value += img[selector++];
+		bb[i].x = value;
+		value = 0;
+		value += img[selector++] * 1000;
+		value += img[selector++] * 100;
+		value += img[selector++] * 10;
+		value += img[selector++];
+		bb[i].y = value;
+		value = 0;
+		value += img[selector++] * 1000;
+		value += img[selector++] * 100;
+		value += img[selector++] * 10;
+		value += img[selector++];
+		bb[i+1].x = value;
+		value = 0;
+		value += img[selector++] * 1000;
+		value += img[selector++] * 100;
+		value += img[selector++] * 10;
+		value += img[selector++];
+		bb[i+1].y = value;
+		value = 0;
+		
+	}
+	return k;
+
+}
+
+void saveClusterInfo(char* savePath, int k, int16_t vectorsNum[4]) {
+	int16_t noviK = (int16_t)k;
+	FILE* fileWrite = fopen(savePath, "wb");
+	fwrite(&noviK, sizeof(int16_t), 1, fileWrite);
+	fwrite(vectorsNum, sizeof(int16_t), k, fileWrite);
+	fclose(fileWrite);
 }

@@ -11,6 +11,8 @@ int calculateAngle2Points(Point to, Point from) {
     return result;
 }
 
+
+
 int blockValueDeviation(uint8_t* frame, Point upperLeftMacroblockCoo) {
     int sum1 = 0;
 	int sum2 = 0;

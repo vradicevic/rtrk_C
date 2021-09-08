@@ -32,9 +32,9 @@ int main(void) {
 	int ftr_num = 6;
 	uint8_t* belongsTo;
 	uint8_t* yuv444 = (uint8_t*)malloc(3*1280*720);
-	char* vectorsPath = "D:\\vektori\\vectors";
+	char* vectorsPath = "D:\\vektori\\bb\\vectors\\vectors";
 	char* belongsToPath = "D:\\vektori\\belongsTo";
-
+	char* clusterInfoPath = "D:\\vektori\\bb\\clusterInfo\\clusterInfo";
 	char outPath[100];
 
 	int steps[3] = { 15,25,35 };
@@ -49,7 +49,11 @@ int main(void) {
 	}
 	int16_t** filteredVectors = malloc(ftr_num * sizeof(int16_t*));
 	for (int i = 0; i < ftr_num; i++) {
-		filteredVectors[i] = malloc(1000 * sizeof(int16_t));
+		filteredVectors[i] = malloc(14400 * sizeof(int16_t));
+	}
+	int16_t** interVectors = malloc(ftr_num * sizeof(int16_t*));
+	for (int i = 0; i < ftr_num; i++) {
+		interVectors[i] = malloc(14400 * sizeof(int16_t));
 	}
 	char log[100];
 	volatile int numOfVs=0;
@@ -57,7 +61,7 @@ int main(void) {
 	Point end = (Point) { .x = 1280, .y = 520 };
 	int EoF;
 	uint8_t* image;
-
+	/*
 	int a = 1;
 	for (int z = 0; z < 40; z += 2) {
 		image = readFrameFrom422YUYVVideo(videopath, WIDTH, HEIGHT, z);
@@ -82,8 +86,42 @@ int main(void) {
 		saveVectors(outPath, filteredVectors, numOfVs, 6);
 		
 	}
+	*/
+	uint8_t* nv12 = malloc(WIDTH * HEIGHT * 1.5);
+	FILE* file = fopen("D:\\Videosekvence\\yuv\\finalfinal\\marked\\mirnaNV12.yuv", "rb");
 	
 	
+	Point bb[8];
+	int k = 0;
+	
+	//printf("K=%d; startx=%d; starty=%d; endx=%d; endy=%d\n", kaa, bb[0].x, bb[0].y, bb[1].x, bb[1].y);
+
+	for (int i = 0; i < 20; i++) {
+		fread(nv12, sizeof(uint8_t), WIDTH* HEIGHT* 1.5, file);
+		k = extractBBInfo(nv12, WIDTH, HEIGHT, bb);
+		getYComponent_YUV420P_YpUVp(prevY, nv12, WIDTH, HEIGHT);
+		fread(nv12, sizeof(uint8_t), WIDTH* HEIGHT* 1.5, file);
+		getYComponent_YUV420P_YpUVp(currY, nv12, WIDTH, HEIGHT);
+		int16_t vectorsNum[4];
+		int cumm = 0;
+		for (int j = 0,num=0; j < k; j++,num+=2) {
+			vectorsNum[j] = blockMatchingEBMA(vectors, currY, prevY, 25, bb[num], bb[num + 1]);
+			filterByLength(vectors, interVectors, &vectorsNum[j], 6);
+			appendVectors(filteredVectors, interVectors, vectorsNum[j], cumm);
+			
+			cumm += vectorsNum[j];
+		}
+		sprintf(outPath, "%s%d.bin", vectorsPath, i);
+		saveVectors(outPath, filteredVectors, cumm, 6);
+		sprintf(outPath, "%s%d.bin", clusterInfoPath, i);
+		saveClusterInfo(outPath, k, vectorsNum);
+		
+		
+		
+	}
+	fclose(file);
+
+
 	return 0;
 	
 }
